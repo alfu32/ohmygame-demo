@@ -1,9 +1,10 @@
 module ohmygame
 
 fn test_create_shape(){
-	plane := Shape{
+	mut plane := Shape{
 		anchor: Point{1,1,1},
-		figure:"
+	}
+	plane.set_figure("
 		      *
 		      #
 		:     ##
@@ -13,43 +14,61 @@ fn test_create_shape(){
 		:     ##
 		      #
 		      *
-		"
-	}
+	    ","
+		      3
+		      3
+		3     33
+		33   3333
+		33322333332221
+		33   3333
+		3     33
+		      3
+		      3
+	    ","
+		      *
+		      #
+		:     ##
+		##   :###
+		###::#####:::>
+		##   :###
+		:     ##
+		      #
+		      *
+	    ")
 	plane_box := plane.get_bounding_rectangle()
+	dump(plane)
+	dump(plane_box)
 
 	assert plane_box.size.x == 14, "wrong shape size.x test"
 	assert plane_box.size.y == 9,  "wrong shape size.y test"
 
-	dump(plane)
-	dump(plane_box)
 }
-fn test_rotate_shape(){
-	mut plane := Shape{
-		anchor: Point{1,1,1},
-		figure:"
-		      *
-		      #
-		:     ##
-		##   :###
-		###::#####:::>
-		##   :###
-		:     ##
-		      #
-		      *
-		"
+fn test_rotate_buffer(){
+	mut figure := trim_indent(normalized_figure("
+        #+-----+
+        +test**|
+        |ROTATE|
+        +------+
+	"),[u8(32)])
+
+	dump("\n"+buffer_to_string(figure))
+	for _ in 0..4{
+		figure=buffer_rotate2d_clockwise(figure)
+		dump("\n"+buffer_to_string(figure))
 	}
-	dump(plane)
-	dump(plane.get_bounding_rectangle())
-	plane.rotate_figure()
-	dump(plane)
-	dump(plane.get_bounding_rectangle())
-	plane.rotate_figure()
-	dump(plane)
-	dump(plane.get_bounding_rectangle())
-	plane.rotate_figure()
-	dump(plane)
-	dump(plane.get_bounding_rectangle())
-	plane.rotate_figure()
-	dump(plane)
-	dump(plane.get_bounding_rectangle())
+}
+
+fn test_cycle_buffer_horizontally(){
+	mut figure := trim_indent(normalized_figure("
+        #.....+
+        ##...++
+        ###.+++
+        ####+++
+	"),[u8(32)])
+	
+	dump("\n"+buffer_to_string(figure))
+	for _ in 0..7{
+		figure=buffer_shift_circular_horizontally(figure)
+		dump("\n"+buffer_to_string(figure))
+	}
 }

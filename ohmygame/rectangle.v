@@ -60,3 +60,7 @@ pub fn (ra Rectangle) intersects(rb Rectangle) bool{
 	bina := corners_b.filter(fn[ra](corner Point) bool {return ra.contains_point(corner)}).len
 	return ainb+bina > 0
 }
+
+pub fn (sh Rectangle) str() string{
+	return " { type: Rectangle, anchor: ${sh.anchor.str()}, size: ${sh.size.str()} }"
+} 
