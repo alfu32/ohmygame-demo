@@ -3,20 +3,23 @@ import ohmygame as omg
 
 pub fn maint(){
 
-	plane := omg.Shape{
+	mut plane := omg.Shape{
 		anchor: omg.Point{1,1,1},
-		figure:"
-		      *
-		      #
-		:     ##
-		##   :###
-		###::#####:::>
-		##   :###
-		:     ##
-		      #
-		      *
-		"
 	}
+	f:="
+		*
+		#
+	:     ##
+	##   :###
+	###::#####:::>
+	##   :###
+	:     ##
+		#
+		*
+	"
+	plane.set_figure(f,f,f)
+	dump(plane)
 
-	dump(plane.rotate_figure())
+	plane.rotate_figure()
+	dump(plane)
 }
