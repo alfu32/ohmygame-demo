@@ -46,14 +46,14 @@ pub fn (mut vp DrawingContext2D) print_shape(sh Shape) {
 			// println("shape ${x} ${y}")
 			if sh_line[x-shr.anchor.x]>32 {
 				vp_lines[y][x]=sh_line[x-shr.anchor.x]
-			}
-			// println("sh_background ${x} ${y}")
-			if sh_bkg[x-shr.anchor.x] > 0  {
-				vp_background[y][x]=sh_bkg[x-shr.anchor.x]
-			}
-			// println("sh_foreground ${x} ${y}")
-			if sh_fgr[x-shr.anchor.x] > 0 {
-				vp_foreground[y][x]=sh_fgr[x-shr.anchor.x]
+				// println("sh_background ${x} ${y}")
+				if sh_bkg[x-shr.anchor.x] > 0  {
+					vp_background[y][x]=sh_bkg[x-shr.anchor.x]
+				}
+				// println("sh_foreground ${x} ${y}")
+				if sh_fgr[x-shr.anchor.x] > 0 {
+					vp_foreground[y][x]=sh_fgr[x-shr.anchor.x]
+				}
 			}
 		}
 	}

@@ -16,6 +16,7 @@ pub fn (mut sc Scene) next(keys string) {
 	}
 }
 pub fn (mut sc Scene) update() {
+	sc.canvas.clear()
 	for ent in sc.objects{
 		//if sc.canvas.window.intersects(ent.shape.get_bounding_rectangle()) {
 			sc.canvas.print_shape(ent.shape)

@@ -33,7 +33,7 @@ pub fn trim_indent(buffer [][]u8,cutset []u8) [][]u8 {
 	stop=false
 	mut d:=[]string{}
 	//println("max_indent init:${max_indent}")
-	for k,l in c {
+	for l in c {
 		if !stop && l.trim(cutset.bytestr()) == "" {
 		} else {
 			stop=true

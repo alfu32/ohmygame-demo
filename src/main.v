@@ -5,6 +5,7 @@ module main
 import term.ui as tui
 import time
 import ohmygame as omg
+import math
 
 @[heap]
 struct Application{
@@ -13,6 +14,7 @@ struct Application{
 	scene omg.Scene
 	buffer map[string]string
 	keys string
+	current_frame u64
 
 	mut:
 		tui_ref       &tui.Context = unsafe { nil }
@@ -22,17 +24,22 @@ struct Application{
 		cut_rate  f64 = 5
 }
 
-pub fn (mut app Application) frame(mut va Application) {
+pub fn frame(mut app Application) {
 	app.tui_ref.clear()
 
 	app.scene.next(app.keys)
+	h:=app.scene.canvas.window.size.y - 11
+	d:=u64(5)
+	app.scene.objects[0].shape.anchor.y=int(2 + h/2 + math.sin(f64((app.current_frame)%(180*d))/math.pi/f64(d))*h/2)
 	app.scene.update()
 	app.scene.render(mut app.tui_ref)
+	app.tui_ref.draw_text(0,0,"FRAME ${app.current_frame}")
 	app.tui_ref.reset()
 	app.tui_ref.flush()
+	app.current_frame+=1
 }
 
-pub fn (mut app Application) event(e &tui.Event, mut va Application) {
+pub fn event(e &tui.Event, mut app Application) {
 
 		app.current=e
 		code := e.code.str()
@@ -80,13 +87,13 @@ pub fn app_init() &Application{
 	mut app:=&Application{
 		scene:scene
 	}
-	mut tui_ref := tui.init(
-		user_data: &app
-		frame_fn: app.frame
-		event_fn: app.event
-		hide_cursor: true
-	)
-	println("tui.Context:${tui_ref}")
+	//// mut tui_ref := tui.init(
+	//// 	user_data: &app
+	//// 	frame_fn: fn(app Application){app.frame(mut app)}
+	//// 	event_fn: fn(evt &tui.Event,app Application){app.event(evt,mut app)}
+	//// 	hide_cursor: true
+	//// )
+	//// println("tui.Context:${tui_ref}")
 	return app
 
 }
@@ -95,10 +102,10 @@ fn main() {
 	mut app := app_init()
 	mut tui_ref := tui.init(
 		user_data: app
-		frame_fn: app.frame
-		event_fn: app.event
+		frame_fn: frame
+		event_fn: event
 		hide_cursor: true
 	)
 	app.tui_ref = tui_ref
-	tui_ref.run()!
+	app.tui_ref.run()!
 }

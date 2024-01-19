@@ -42,6 +42,28 @@ pub fn buffer_shift_circular_vertically(figure [][]u8) [][]u8 {
 	}
 	return new_figure//.split("\n").map(it.bytes())
 }
+pub fn buffer_shift_horizontally(figure [][]u8,fill_char u8) [][]u8 {
+	width:=figure[0].len
+	height:=figure.len
+	mut new_figure := [][]u8{len: height, init: []u8{len: width,init: 32}}
+	for y in 0..height {
+		for x in 0..width-1 {
+			new_figure[y][x]=figure[y][(x+1)%width]
+		}
+		new_figure[y][width-1]=fill_char
+	}
+	return new_figure//.split("\n").map(it.bytes())
+}
+pub fn buffer_shift_vertically(figure [][]u8,fill_char u8) [][]u8 {
+	width:=figure[0].len
+	height:=figure.len
+	mut new_figure := [][]u8{len: height, init: []u8{len: width,init: 32}}
+	for y in 0..height-1 {
+		new_figure[y]=figure[(y+1)%height]
+	}
+	new_figure[height-1]=[]u8{len:width,init:fill_char}
+	return new_figure//.split("\n").map(it.bytes())
+}
 
 pub struct Shape{
 	pub mut:
@@ -57,8 +79,8 @@ pub fn (mut sh Shape) set_figure(fig string,color string,background string) Shap
 	height:=sh.figure.len
 	width:=sh.figure[0].len
 	sh.size=Point{x:width,y:height,z:1}
-	sh.background=trim_indent(normalized_figure(background)," ".bytes()).map(it.map(it%8))
-	sh.foreground=trim_indent(normalized_figure(color)," ".bytes()).map(it.map(it%8))
+	sh.background=trim_indent(normalized_figure(background)," ".bytes()).map(it.map(1+(it%3)))
+	sh.foreground=trim_indent(normalized_figure(color)," ".bytes()).map(it.map(3+((it)%4)))
 	return sh
 }
 pub fn (mut sh Shape) rotate_figure() {
