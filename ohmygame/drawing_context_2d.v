@@ -3,15 +3,18 @@ module ohmygame
 import math
 
 pub struct DrawingContext2D{
+	pub:
+		fill string
 	pub mut:
-	window Rectangle
-	buffer [][]u8
-	background [][]u8
-	foreground [][]u8
+		window Rectangle
+		buffer [][]u8
+		background [][]u8
+		foreground [][]u8
 }
 
 pub fn drawing_context_2d_create(width int, height int,fill string) DrawingContext2D {
 	vp := DrawingContext2D{
+		fill: fill
 		window: Rectangle{
 			anchor: Point{0,0,0}
 			size: Point{width,height,0}
@@ -23,6 +26,14 @@ pub fn drawing_context_2d_create(width int, height int,fill string) DrawingConte
 	return vp
 }
 
+pub fn (mut vp DrawingContext2D) resize(width int,height int) {
+	vp.window.size.x=width
+	vp.window.size.y=height
+	vp.buffer = [][]u8{len: height, init: []u8{len: width,init: vp.fill[0]}}
+	vp.background = [][]u8{len: height, init: []u8{len: width,init: 0}}
+	vp.foreground = [][]u8{len: height, init: []u8{len: width,init: 0}}
+
+}
 pub fn (mut vp DrawingContext2D) print_shape(sh Shape) {
 	mut vp_lines:=vp.buffer.map(it[0..it.len])
 	mut vp_background:=vp.background.map(it[0..it.len])
@@ -60,7 +71,7 @@ pub fn (mut vp DrawingContext2D) print_shape(sh Shape) {
 	// vp.buffer=vp_lines
 	// vp.background=vp_background
 	// vp.foreground=vp_foreground
-	
+
 }
 pub fn (mut vp DrawingContext2D) clear() {
 	vp.buffer=[][]u8{len: vp.window.size.y, init: []u8{len: vp.window.size.x,init: 32}}
@@ -82,6 +93,6 @@ ${buffer_to_numbers(vp.background)}BUFFER
 foreground:BUFFER>>>
 ${buffer_to_numbers(vp.foreground)}BUFFER
 }"
-} 
+}
 
 

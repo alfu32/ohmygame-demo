@@ -2,8 +2,10 @@ module ohmygame
 
 import term.ui as tui
 import rand
+import math
+import time
 
-pub const color_codes = [
+	pub const color_codes = [
 	tui.Color{0, 0, 0},
 	tui.Color{0, 150, 136},
 	tui.Color{33, 150, 243},
@@ -60,7 +62,11 @@ pub fn (mut e Entity) next(mut context Scene, keys string){
 
 // factory makes it move like Jagger
 pub fn make_user_input_next_action(keyscombo string) EntityFn {
-	return fn[keyscombo](mut context Scene,mut e Entity,keys string) Entity {
+	return fn[keyscombo](mut scene Scene,mut e Entity,keys string) Entity {
+		d:=int(10)
+		t := f64(time.now().unix_time()/10)
+		h:=scene.canvas.window.size.y - 11
+
 		kbytes:=keys.bytes()
 		if kbytes.contains(keyscombo[0]) {
 			e.shape.anchor.y-=1
@@ -74,7 +80,8 @@ pub fn make_user_input_next_action(keyscombo string) EntityFn {
 		if kbytes.contains(keyscombo[3]) {
 			e.shape.anchor.x+=1
 		}
-		e.shape.background=buffer_shift_circular_horizontally(e.shape.background)
+		e.shape.anchor.y=int(2 + h/2 + math.sin(f64(int(t)%(180*d))/math.pi )/d*h/2 )
+
 		return e
 	}
 }
@@ -88,6 +95,16 @@ pub fn create_player_ship(figure string,next_frame EntityFn) Entity {
 		}
 	}
 	ent.shape.set_figure(figure,figure,figure)
+	ent.actions["bling"]=EntityAction {
+		name: "bling"
+		energy: 64
+		last_frame: 0
+		reaction_time: 1
+		next_frame: fn(mut sc Scene,mut e Entity,mut self EntityAction,keys string) EntityAction{
+			e.shape.background=buffer_shift_circular_horizontally(e.shape.background)
+			return self
+		}
+	}
 	ent.next_frame=next_frame
 	return ent
 }

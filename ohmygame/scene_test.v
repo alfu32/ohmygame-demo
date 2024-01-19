@@ -20,7 +20,7 @@ struct Application{
 fn (mut app Application) frame(mut va Application) {
 	app.tui_ref.clear()
 
-	app.scene.update()
+	app.scene.animate()
 	app.scene.render(mut app.tui_ref)
 	app.tui_ref.reset()
 	app.tui_ref.flush()
@@ -66,7 +66,7 @@ pub fn test_render(){
 	)
 	println("ohmygame.Entity:${ship}")
 	scene.objects << ship
-	scene.update()
+	scene.animate()
 
 	println("ohmygame.Scene:${scene}")
 

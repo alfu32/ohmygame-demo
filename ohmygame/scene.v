@@ -15,7 +15,7 @@ pub fn (mut sc Scene) next(keys string) {
 		ent.next(mut sc, keys)
 	}
 }
-pub fn (mut sc Scene) update() {
+pub fn (mut sc Scene) animate() {
 	sc.canvas.clear()
 	for ent in sc.objects{
 		//if sc.canvas.window.intersects(ent.shape.get_bounding_rectangle()) {
