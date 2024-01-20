@@ -41,7 +41,7 @@ fn (mut app Application) event(e &tui.Event, mut va Application) {
 }
 
 pub fn test_render(){
-	mut canvas:DrawingContext2D = drawing_context_2d_create(50,20," ")
+	mut canvas := drawing_context_2d_create(50,20," ")
 	println("ohmygame.DrawingContext2D:${canvas}")
 	mut scene:=Scene{
 		objects:[]Entity{}
@@ -62,7 +62,7 @@ pub fn test_render(){
 		      #
 		      *
 		",
-		make_user_input_next_action("wasd"),
+		make_user_input_next_action(string_to_keycodes("w,a,s,d")),
 	)
 	println("ohmygame.Entity:${ship}")
 	scene.objects << ship
@@ -83,7 +83,6 @@ pub fn test_render(){
 	for i in 0..100 {
 		time.sleep(.5)
 		tui_ref.clear()
-		canvas.
 	}
 	//app.tui_ref.run()!
 

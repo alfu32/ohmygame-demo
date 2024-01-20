@@ -17,9 +17,12 @@ fn main() {
 		      #
 		      *
 		",
-		omg.make_user_input_next_action("wasd"),
+		omg.make_user_input_next_action(omg.string_to_keycodes("wasd")),
 	)
 	mut app := omg.app_init()
 	app.add_object(ship)
-	app.run()!
+	//// println(app)
+	app.run() or {
+		panic("encountered $err")
+	}
 }

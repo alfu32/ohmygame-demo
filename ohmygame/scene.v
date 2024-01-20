@@ -9,7 +9,7 @@ pub struct Scene{
 	frame u64
 }
 
-pub fn (mut sc Scene) next(keys string) {
+pub fn (mut sc Scene) next(keys []tui.KeyCode) {
 	sc.frame+=1
 	for mut ent in sc.objects{
 		ent.next(mut sc, keys)
