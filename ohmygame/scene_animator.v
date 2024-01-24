@@ -307,7 +307,7 @@ pub fn event(e &tui.Event, mut sa SceneAnimator) {
 pub fn app_init() &SceneAnimator{
 	mut app:=&SceneAnimator{
 		scene:Scene{
-			objects:[]Entity{}
+			objects:[]&Entity{}
 			canvas:drawing_context_2d_create(144,45," ")
 			frame:0
 		},

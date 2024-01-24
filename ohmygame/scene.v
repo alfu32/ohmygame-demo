@@ -4,7 +4,7 @@ import term.ui as tui
 
 pub struct Scene{
 	pub mut:
-	objects []Entity
+	objects []&Entity
 	canvas DrawingContext2D
 	frame u64
 }
@@ -23,7 +23,7 @@ pub fn (mut sc Scene) animate() {
 		//}
 	}
 }
-pub fn (mut sc Scene) render(mut rendering_context tui.Context){
+pub fn (mut sc Scene) render(mut rendering_context tui.Context) {
 	rendering_context.clear()
 	for y in 0..sc.canvas.window.size.y {
 		for x in 0..sc.canvas.window.size.x {
@@ -33,4 +33,23 @@ pub fn (mut sc Scene) render(mut rendering_context tui.Context){
 			rendering_context.draw_text(x+sc.canvas.window.anchor.x,y+sc.canvas.window.anchor.y,charat)
 		}
 	}
+}
+pub fn (mut sc Scene) render_to_terminal(mut t &Terminal) {
+	border := "-".repeat(sc.canvas.window.size.x)
+	t.clear()
+	t.putstr("+${border}+\n",Color.black,Color.white)
+	for y in 0..sc.canvas.window.size.y {
+		t.putstr("#",Color.black,Color.white)
+		for x in 0..sc.canvas.window.size.x {
+			charat:= [sc.canvas.buffer[y][x]].bytestr()
+			t.putstr(charat,color_from_munber(sc.canvas.background[y][x]),color_from_munber(sc.canvas.foreground[y][x]))
+		}
+		t.putstr("#\n",Color.black,Color.white)
+	}
+	t.putstr("+${border}+",Color.black,Color.white)
+}
+pub fn (mut sc Scene) render_to_string() string{
+	mut t := Terminal{}
+	sc.render_to_terminal(mut t)
+	return t.str()
 }

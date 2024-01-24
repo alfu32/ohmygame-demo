@@ -5,7 +5,7 @@ import rand
 import math
 import time
 
-	pub const color_codes = [
+pub const color_codes = [
 	tui.Color{0, 0, 0},
 	tui.Color{0, 150, 136},
 	tui.Color{33, 150, 243},
@@ -18,6 +18,7 @@ import time
 pub type EntityActionFn = fn(mut context Scene,mut e Entity, mut self EntityAction,keys []tui.KeyCode) EntityAction
 pub type EntityFn = fn(mut context Scene,mut e Entity, keys []tui.KeyCode) Entity
 
+@[heap]
 pub struct EntityAction {
 	name string
 	mut:
@@ -27,11 +28,14 @@ pub struct EntityAction {
 	next_frame EntityActionFn = fn(mut context Scene,mut e Entity, mut self EntityAction,keys []tui.KeyCode) EntityAction {return self}
 }
 pub fn (mut ea EntityAction) next(mut context Scene,mut e Entity,keys []tui.KeyCode){
+	mut self := &ea
 	if context.frame-ea.last_frame > ea.reaction_time {
-		ea.last_frame=context.frame
+		self.last_frame=context.frame
 		ea.next_frame(mut context, mut e,mut ea,keys)
 	}
 }
+
+@[heap]
 pub struct Entity{
 	pub mut:
 	instance_id string//  = rand.uuid_v4()
@@ -48,8 +52,9 @@ pub struct Entity{
 	next_frame EntityFn = fn(mut context Scene,mut e Entity,keys []tui.KeyCode) Entity { return e}
 }
 pub fn (mut e Entity) next(mut context Scene, keys []tui.KeyCode){
+	mut self := &e
 	if context.frame-e.last_frame > e.reaction_time {
-		e.last_frame=context.frame
+		self.last_frame=context.frame
 
 		e.next_frame(mut context, mut e,keys)
 	}
@@ -86,8 +91,8 @@ pub fn make_user_input_next_action(keyscombo []tui.KeyCode) EntityFn {
 }
 
 
-pub fn create_player_ship(figure string,next_frame EntityFn) Entity {
-	mut ent := Entity {
+pub fn create_player_ship(figure string,next_frame EntityFn) &Entity {
+	mut ent := &Entity {
 		instance_id: rand.uuid_v4()
 		shape: Shape{
 			anchor: Point{2,3,4}
