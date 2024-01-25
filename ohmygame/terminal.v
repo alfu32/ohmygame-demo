@@ -1,6 +1,6 @@
 module ohmygame
 
-
+import term.ui as tui
 pub enum Color{
 	black
 	red
@@ -43,6 +43,7 @@ pub struct Terminal{
 		last_color Color
 		last_background Color
 		stream string  = "\x1b[3J\x1b[0,0H"
+		context &tui.Context = unsafe{ nil }
 }
 pub fn get_color(c Color) string {
 	return "\x1b[${30+c.value()}m"

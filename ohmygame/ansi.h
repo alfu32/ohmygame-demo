@@ -51,4 +51,4 @@
     // Restore Cursor Position
     #define ANSI_RESTORE_CURSOR_POS "\x1b[u"
 
-#endif /* ANSI_COLORS_H */
+#endif /* ANSI_COLORS_H*/ inline error goto float

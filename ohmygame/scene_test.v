@@ -11,36 +11,6 @@ struct Application{
 	pub  mut:
 	current tui.Event
 	scene Scene
-	buffer map[string]string
-
-	mut:
-		tui_ref       &tui.Context = unsafe { nil }
-		points    []Point
-		color     tui.Color = color_codes[0]
-		color_idx int
-		cut_rate  f64 = 5
-}
-fn (mut app Application) frame(mut va Application) {
-	app.tui_ref.clear()
-
-	app.scene.animate()
-	app.scene.render(mut app.tui_ref)
-	app.tui_ref.reset()
-	app.tui_ref.flush()
-}
-
-fn (mut app Application) event(e &tui.Event, mut va Application) {
-
-		app.current=e
-		code := e.code.str()
-		app.buffer["dbg"] = e.str()
-		app.buffer["ts"] = time.now().str()
-
-		if e.typ == .key_down {
-			app.buffer[code]=code
-		} else {
-			app.buffer["code"]=code
-		}
 }
 
 pub fn test_render(){
@@ -49,7 +19,7 @@ pub fn test_render(){
 	mut scene:=Scene{
 		objects:[]&Entity{}
 		canvas:canvas
-		frame:0
+		frame: time.now()
 	}
 	println("ohmygame.Scene:${scene}")
 
@@ -65,27 +35,18 @@ pub fn test_render(){
 		      #
 		      *
 		",
-		make_user_input_next_action(string_to_keycodes("w,a,s,d")),
 	)
 	println("ohmygame.Entity:${ship}")
 	scene.objects << ship
-	scene.animate()
+	scene.update()
 
 	println("ohmygame.Scene:${scene}")
 
 	mut app:=Application{
 		scene:scene
 	}
-	mut tui_ref := tui.init(
-		user_data: &app
-		frame_fn: app.frame
-		event_fn: app.event
-		hide_cursor: true
-	)
-	println("tui.Context:${tui_ref}")
 	for i in 0..100 {
 		time.sleep(.5)
-		tui_ref.clear()
 	}
 	//app.tui_ref.run()!
 
@@ -97,7 +58,7 @@ pub fn test_render_to_string(){
 	mut scene:=Scene{
 		objects:[]&Entity{}
 		canvas:canvas
-		frame:0
+		frame:time.now()
 	}
 	dump("ohmygame.Scene:${scene}")
 
@@ -113,7 +74,6 @@ pub fn test_render_to_string(){
 		      #
 		      *
 		",
-		make_user_input_next_action(string_to_keycodes("w,a,s,d")),
 	)
 	dump("ohmygame.Entity:${ship}")
 	scene.objects << ship
@@ -122,20 +82,20 @@ pub fn test_render_to_string(){
 		print(ansi_cls)
 		ship.shape.anchor.x=ship.shape.anchor.x+1
 		term.clear()
-		scene.animate()
+		scene.update()
 		print(scene.render_to_string())
 		flush_stdout()
 		time.sleep(0.3)
 	}
-	scene.animate()
+	scene.update()
 	dump(scene.render_to_string())
 	ship.shape.anchor.x=ship.shape.anchor.x+2
 	dump(ship.shape)
-	scene.animate()
+	scene.update()
 	dump(scene.render_to_string())
 	ship.shape.anchor.x=ship.shape.anchor.x+2
 	dump(ship.shape)
-	scene.animate()
+	scene.update()
 	dump(scene.render_to_string())
 	dump(scene)
 }
