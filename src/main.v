@@ -4,6 +4,7 @@ import ohmygame as omg
 import term.ui as tui
 import time
 import term
+import os
 
 const millis = 1000000
 pub fn fetch_keys() !string {
@@ -17,27 +18,26 @@ pub fn fetch_keys() !string {
 	return "abcd"
 }
 
-fn main1() {
-	mut kbd := omg.Keyboard{location: "/tmp/kbev/events"}
-	println(kbd)
-	dump(kbd)
-	assert kbd.file.fd == 0
-	assert kbd.file.is_opened == false
-	kbd.init()
-	for {
-		evs := kbd.dequeue_events()
-		println(evs)
-	}
-	dump(kbd)
-	assert kbd.file.fd != 0
-	assert kbd.file.is_opened == true
-	kbd.close()
-	println(kbd)
-	dump(kbd)
-	assert kbd.file.fd != 0
-	assert kbd.file.is_opened == false
-}
 fn main() {
+	// kbd := Keyboard{
+	// 	device:
+	// 	ev: InputEvent{}
+	// 	pressed: {}
+	// }
+	pipename := "/tmp/kbev/events"
+	mut f := os.open(pipename) or {
+		panic("file ${pipename} not found")
+	}
+	a:= f.read_bytes(24)
+	println(a)
+	mut iev := InputEvent{}
+	f.read_struct[InputEvent](mut iev) or {
+		panic("reading struct not working")
+	}
+	println(iev)
+	f.close()
+}
+fn main0() {
 	mut canvas := omg.drawing_context_2d_create(160,15," ")
 	mut scene:=omg.Scene{
 		objects:[]&omg.Entity{}
