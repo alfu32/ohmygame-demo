@@ -1,0 +1,12 @@
+[Unit]
+Description=Pipe keyboard events to /dev/kb
+
+[Service]
+ExecStartPre=/bin/sh -c "echo \"kbev starting\""
+ExecStart=./kbevd.sh
+ExecStop=/bin/sh -c "echo \"kbev stopped\""
+Restart=always
+User=root
+
+[Install]
+WantedBy=multi-user.target

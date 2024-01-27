@@ -48,6 +48,8 @@ function main(){
 
   # Set a trap to call the interrupt_handler function when SIGINT is received
   trap interrupt_handler SIGINT
+  trap interrupt_handler SIGTERM
+  trap interrupt_handler SIGHUP
 
 
   current=$(pwd)
