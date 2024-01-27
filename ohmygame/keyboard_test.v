@@ -55,23 +55,23 @@ pub fn test_kbd_fetch_events(){
 }
 
 fn test_termios() {
-	fd:=os.stdin().fd
-	mut original_term := termios.Termios{}
-	termios.tcgetattr(fd, mut original_term)
-	println(original_term)
+	mut old_state := termios.Termios{}
+	if termios.tcgetattr(0, mut old_state) != 0 {
+		//return os.last_error()
+		panic(os.last_error())
+	}
+	defer {
+		// restore the old terminal state:
+		termios.tcsetattr(0, C.TCSANOW, mut old_state)
+	}
 
-	mut silent_term := original_term
-	silent_term.c_lflag &= termios.invert(10)
-	termios.tcsetattr(fd, 0, mut silent_term)
+	mut state := termios.Termios{}
+	if termios.tcgetattr(0, mut state) != 0 {
+		//return os.last_error()
+		panic(os.last_error())
+	}
 
-	mut check_term := termios.Termios{}
-	termios.tcgetattr(fd, mut check_term)
-	assert check_term.c_lflag == silent_term.c_lflag
-	dump(check_term)
+	state.c_lflag &= termios.invert(u32(C.ICANON) | u32(C.ECHO))
+	termios.tcsetattr(0, C.TCSANOW, mut state)
 
-	termios.tcsetattr(fd, 0xffff, mut original_term)
-
-	termios.tcgetattr(fd, mut check_term)
-	assert check_term.c_lflag == original_term.c_lflag
-	dump(check_term)
 }

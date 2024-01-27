@@ -26,20 +26,51 @@ pub struct Keyboard{
 	stdin_handle voidptr
 	stdout_handle voidptr
 }
-pub fn (mut kb Keyboard) init() Keyboard {
-	println("using input stream ${kb.location}")
-	kb.file = os.open(kb.location) or {
-		panic("file ${kb.location} not found")
+fn copy_termios(src termios.Termios) termios.Termios {
+	// mut cpcc:=[termios.cclen]termios.Cc{}
+	//mut cpreserved :=[3]u32{}
+	//cpreserved[0]=src.reserved[0]
+	//cpreserved[1]=src.reserved[1]
+	//cpreserved[2]=src.reserved[2]
+	//for k,cc in src.c_cc {
+	//	cpcc[k]=cc
+	//}
+	return termios.Termios{
+		c_iflag: src.c_iflag
+		c_oflag: src.c_oflag
+		c_cflag: src.c_cflag
+		c_lflag: src.c_lflag
+		c_cc: src.c_cc
+		// reserved: cpreserved
+		c_ispeed: src.c_ispeed
+		c_ospeed: src.c_ospeed
 	}
+}
+pub fn (mut kb Keyboard) init() Keyboard {
+	// setting terminal not to show stdin
+	// rendering stdin silent
+	termios.tcgetattr(0, mut kb.original_term);
+	kb.silent_term = copy_termios(kb.original_term)
+	kb.silent_term.c_lflag &= int(4294967285)
+	kb.silent_term.c_ispeed = 1
+	kb.silent_term.c_ospeed = 1
+	termios.tcsetattr(0, 0, mut kb.silent_term);
+
+	println("using input stream ${kb.location}")
 	return kb
 }
 pub fn (mut kb Keyboard) close() Keyboard {
-	kb.file.close()
+	kb.original_term.c_lflag |= int(12)
+	termios.tcsetattr(0, 0, mut kb.original_term);
 	return kb
 }
 
 
 pub fn (mut kb Keyboard) dequeue_events() []InputEvent {
+	kb.file = os.open(kb.location) or {
+		panic("file ${kb.location} not found")
+	}
+
 	mut events := []InputEvent{}
 
 	for {
@@ -49,6 +80,7 @@ pub fn (mut kb Keyboard) dequeue_events() []InputEvent {
 		}
 		events << iev
 	}
+	kb.file.close()
 	return events
 }
 pub fn (mut kb Keyboard) flush_file() {
@@ -65,7 +97,7 @@ pub fn (mut kb Keyboard) flush_file() {
 pub fn (mut self Keyboard) refresh_state() Keyboard {
 	mut kb:=&self
 	kb.events=kb.dequeue_events()
-	println("found ${kb.events.len}")
+	//println("found ${kb.events.len}")
 	for ev in kb.events {
 		if ev.typ == 0x01 {
 			if ev.value == 0 {

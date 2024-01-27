@@ -51,8 +51,7 @@ function main(){
 
 
   current=$(pwd)
-  mkdir -p /tmp/kbev
-  cd /tmp/kbev
+  mkdir -p /tmp/kbev && cd /tmp/kbev || exit
   echo "configured events service in  : /tmp/kbev"
 
   #ExecStartPre
