@@ -1,45 +1,26 @@
 module main
 
 import ohmygame as omg
-import term.ui as tui
 import time
 import term
 
 const millis = 1000000
-pub fn fetch_keys() !string {
-	cfg:= tui.Config{
-		buffer_size :  256
-		frame_rate  :  30
-		use_x11     : false
-	}
-	mut vtx:=tui.init(cfg) as &tui.Context
-	vtx.run()!
-	return "abcd"
-}
 
 fn main() {
 	mut kbd := omg.Keyboard{location: "/tmp/kbev/events"}
 	kbd.init()
 	//println(kbd)
 	println("\nstarting\n")
-	term.hide_cursor()
 	for _ in 1 ..100000 {
-
-		kbd=kbd.refresh_state()
-		mut pressed:=[]i32{}
-		for k,v in kbd.pressed {
-			if v!=0 {
-				pressed << k
-			}
-		}
+		kbd.refresh_state()
+		pressed:= kbd.get_pressed_keys()
 		print("\r${pressed}                       ")
-		if 1 in pressed {
+		if kbd.any_is_pressed(['escape']) {
 			break
 		}
 		/// print("\r${kbd.pressed.keys()}")
 		time.sleep(1000*1000*1)
 	}
-	term.show_cursor()
 	println("\ndone\n")
 	println(kbd)
 	kbd.close()

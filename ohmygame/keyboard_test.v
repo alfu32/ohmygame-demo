@@ -52,6 +52,7 @@ pub fn test_kbd_fetch_events(){
 	kbd.init()
 	kbd=kbd.refresh_state()
 	println(kbd)
+	kbd.close()
 }
 
 fn test_termios() {
