@@ -7,11 +7,21 @@ import term
 const millis = 1000000
 
 fn main() {
+	// initializing keyboard device
 	mut kbd := omg.Keyboard{location: "/tmp/kbev/events"}
 	kbd.init()
-	//println(kbd)
-	println("\nstarting\n")
-	for _ in 1 ..100000 {
+	// init scenes
+	mut intro := omg.Scene{}
+	mut game := omg.Scene{}
+	mut end_scene := omg.Scene{}
+	mut scenes :=[]omg.Scene{
+		intro,
+		game,
+		end_scene,
+	}
+	mut current_scene_index:=0
+	mut current_scene := scenes[current_scene_index]
+	for {
 		kbd.refresh_state()
 		pressed:= kbd.get_pressed_keys()
 		print("\r${pressed}                       ")
@@ -20,9 +30,16 @@ fn main() {
 		}
 		/// print("\r${kbd.pressed.keys()}")
 		time.sleep(1000*1000*1)
+		if scenes[current_scene_index].is_finished() {
+			current_scene_index+=1
+			current_scene = scenes[current_scene_index]
+		}
+		if &current_scene == voidptr {
+			break
+		}
 	}
-	println("\ndone\n")
-	println(kbd)
+
+	// deinit keyboard
 	kbd.close()
 }
 fn main0() {

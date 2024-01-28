@@ -163,18 +163,6 @@ pub fn (kb Keyboard) to_str() string {
 	return r
 }
 
-pub struct InputEventTime{
-	seconds u64
-	nanos u64
-}
-pub fn (a InputEventTime) <(b InputEventTime) bool {
-	return a.seconds < b.seconds ||
-		( a.seconds==b.seconds && a.nanos<b.nanos)
-}
-pub fn (a InputEventTime) ==(b InputEventTime) bool {
-	return ( a.seconds==b.seconds && a.nanos==b.nanos)
-}
-
 pub struct InputEvent{
 	pub mut:
 	event_timestamp InputEventTime
@@ -535,7 +523,7 @@ pub fn strings_to_keycodes(list []string) []tui.KeyCode {
 pub fn keycode_to_strings(list []tui.KeyCode) []string {
 	return list.map(keycode_to_keyname)
 }
-pub fn keycode_to_keyname(e tui.KeyCode) string {
+pub fn keycode_to_keyname(code tui.KeyCode) string {
 	return match code {
 		.null { '\0' }
 		.tab { '\t' }

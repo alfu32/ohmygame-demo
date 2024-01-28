@@ -12,7 +12,7 @@ pub fn pad_start(s string,max_len u32,pad_string string) string {
 		return s
 	}
 	pr:="${pad_string.repeat(max_len)}${s}"
-	return pr[(max_len-pr.len)..max_len]
+	return pr[(pr.len-max_len)..pr.len]
 }
 pub fn trim_indent(buffer [][]u8,cutset []u8) [][]u8 {
 	mut max_indent:=0

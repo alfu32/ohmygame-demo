@@ -1,13 +1,26 @@
 module ohmygame
 
 import rand
+import time
 
+
+pub enum EntityType {
+	friend
+	foe
+	background_picture
+	background_interactive
+}
+pub type EntityActionFn = fn ( e Entity, scene Scene, frame time.Time, keyboard Keyboard )
+pub struct EntityAction {
+	max_interval time.Time
+}
 @[heap]
 pub struct Entity{
 	pub mut:
 	instance_id string//  = rand.uuid_v4()
-	type_name string
+	user string
 	shape Shape
+	actions []EntityAction
 }
 
 

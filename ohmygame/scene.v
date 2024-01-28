@@ -7,12 +7,18 @@ pub struct Scene{
 	objects []&Entity
 	canvas DrawingContext2D
 	frame time.Time
+	is_finished bool
 }
 
 
 pub fn (mut sc Scene) add_object(e &Entity) {
 	sc.objects << e
 }
+
+pub fn (mut sc Scene) is_finished() bool {
+	return sc.is_finished
+}
+
 pub fn (mut sc Scene) update() {
 	sc.canvas.clear()
 	for ent in sc.objects{
