@@ -15,9 +15,12 @@ function get_keyboard_input_devices_list() {
 function start_cat {
   local input_devices="$1"
   IFS=$' '
+  kb_index=0
   for device in $input_devices; do
     # ../.././read-event $device
-    cat -u $device $device > events &
+    cat -u $device $device >> events &
+    cat -u $device $device >> "keyboard_$kb_index" &
+    kb_index=$((kb_index+1))
   done
   IFS=$' \t\n'
 }
