@@ -13,8 +13,8 @@ pub fn test_less_than(){
 		nanos: 2
 	}
 
-	dump(a)
-	dump(b)
+	dump(a.to_string())
+	dump(b.to_string())
 	assert a < b
 	assert b>a
 }
@@ -22,37 +22,39 @@ pub fn test_sum(){
 
 	a:=InputEventTime{
 		seconds: 150
-		nanos: 3500000000
+		nanos: 350000000
 	}
 
 	b:=InputEventTime{
 		seconds: 180
-		nanos: 4500000000
+		nanos: 450000000
 	}
 
 	c:=a+b
 
-	dump(a)
-	dump(b)
-	dump(c)
+	dump(a.to_string())
+	dump(b.to_string())
+	dump(c.to_string())
+	assert c == input_event_time_from_str('330.8')
 }
 pub fn test_diff(){
 
 	a:=InputEventTime{
 		seconds: 50
-		nanos: 3500000000
+		nanos: 350000000
 	}
 
 	b:=InputEventTime{
 		seconds: 80
-		nanos: 4500000000
+		nanos: 450000000
 	}
 
 	d:=b-a
 
-	dump(b)
-	dump(a)
-	dump(d)
+	dump(b.to_string())
+	dump(a.to_string())
+	dump(d.to_string())
+	assert d == input_event_time_from_str('30.1')
 }
 pub fn test_diff_with_carry_nanos(){
 
@@ -65,14 +67,12 @@ pub fn test_diff_with_carry_nanos(){
 		seconds: 31
 		nanos: 399999999
 	}
-	c:=input_event_time_from_str("10.999999999")
 
 	d:=b-a
 
 	dump(b)
 	dump(a)
 	dump(d)
-	dump(c)
 
-	assert c == d
+	assert d == input_event_time_from_str("10.999999999")
 }

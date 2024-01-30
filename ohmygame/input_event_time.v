@@ -9,7 +9,7 @@ pub fn input_event_time_from_str(s string) InputEventTime {
 	t := s.split(".")
 	return InputEventTime {
 		seconds: (t[0]).u64()
-		nanos: (t[1]).u64()
+		nanos: (pad_end(t[1],9,'0')).u64()
 	}
 }
 pub fn (a InputEventTime) + (b InputEventTime) InputEventTime {
@@ -44,7 +44,7 @@ pub fn (a InputEventTime) <(b InputEventTime) bool {
 pub fn (a InputEventTime) ==(b InputEventTime) bool {
 	return ( a.seconds==b.seconds && a.nanos==b.nanos)
 }
-pub fn (a InputEventTime) str() string{
+pub fn (a InputEventTime) to_string() string{
 	nanos:=pad_start(a.nanos.str(),9,"0").substr(0,9)
 	return "${a.seconds}.${nanos}"
 }
