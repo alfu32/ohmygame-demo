@@ -1,30 +1,30 @@
 module ohmygame
 
 import rand
-import time
 
-
-pub enum EntityType {
-	friend
-	foe
-	background_picture
-	background_interactive
-}
-pub type EntityActionFn = fn ( e Entity, scene Scene, frame time.Time, keyboard Keyboard )
-pub struct EntityAction {
-	max_interval time.Time
-}
 @[heap]
 pub struct Entity{
 	pub mut:
-	instance_id string//  = rand.uuid_v4()
-	user string
-	shape Shape
-	actions []EntityAction
+		parent_scene Scene
+		instance_id string//  = rand.uuid_v4()
+		user string
+		shape Shape
+		actions []EntityAction
+		life u64 = 100
+		power u64 = 10
 }
 
 
-pub fn create_player_ship(figure string) &Entity {
+pub fn (mut e Entity)run_actions( frame InputEventTime, mut keyboard Keyboard ){
+	for mut a in e.actions {
+		if a.max_uppdate_interval < frame - a.last_updated {
+			a.action_fn(mut &e,mut &e.parent_scene,frame,&keyboard)
+			a.last_updated = frame
+		}
+	}
+}
+
+pub fn create_user_actionable_object(figure string) &Entity {
 	mut ent := &Entity {
 		instance_id: rand.uuid_v4()
 		shape: Shape{

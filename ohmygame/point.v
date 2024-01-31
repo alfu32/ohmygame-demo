@@ -1,5 +1,7 @@
 module ohmygame
 
+import math
+
 
 pub struct Point {
 	pub mut:
@@ -37,4 +39,12 @@ pub fn (ra Point) copy() Point{
 }
 pub fn (ra Point) str() string{
 	return "ohmygame.Point{x:${ra.x},y:${ra.y},z:${ra.z}}"
+}
+
+pub fn (p Point) len_squared() u64 {
+	return (p.x*p.x + p.y*p.y + p.z*p.z).str().u64()
+}
+
+pub fn (p Point) length() u64 {
+	return math.sqrti(p.len_squared()).str().u64()
 }

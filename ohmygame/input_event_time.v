@@ -1,5 +1,7 @@
 module ohmygame
 
+import time
+
 
 pub struct InputEventTime{
 	seconds u64
@@ -10,6 +12,13 @@ pub fn input_event_time_from_str(s string) InputEventTime {
 	return InputEventTime {
 		seconds: (t[0]).u64()
 		nanos: (pad_end(t[1],9,'0')).u64()
+	}
+}
+pub fn input_event_time_now() InputEventTime {
+	t := time.now()
+	return InputEventTime {
+		seconds: t.unix.str().u64()
+		nanos: t.nanosecond.str().u64()
 	}
 }
 pub fn (a InputEventTime) + (b InputEventTime) InputEventTime {

@@ -50,7 +50,7 @@ fn main0() {
 		frame:time.now()
 	}
 
-	mut ship:= omg.create_player_ship(
+	mut ship:= omg.create_user_actionable_object(
 		"
 		      *
 		      #
@@ -71,7 +71,7 @@ fn main0() {
 		if ship.shape.anchor.x > 149 {
 			ship.shape.anchor.x=-10
 		}
-		scene.update()
+		scene.update_canvas()
 		println(scene.render_to_string())
 		// flush_stdout()
 		time.sleep(1*millis)

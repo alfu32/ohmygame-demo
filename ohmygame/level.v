@@ -1,7 +1,5 @@
 module ohmygame
 
-import time
-
 
 @[heap]
 struct Level{
@@ -14,7 +12,7 @@ pub fn level_create() &Level{
 		scenes:[Scene{
 			objects:[]&Entity{}
 			canvas:drawing_context_2d_create(144,45," ")
-			frame: time.now()
+			frame: input_event_time_now()
 		}],
 	}
 	return level

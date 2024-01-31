@@ -19,11 +19,11 @@ pub fn test_render(){
 	mut scene:=Scene{
 		objects:[]&Entity{}
 		canvas:canvas
-		frame: time.now()
+		frame: input_event_time_now()
 	}
 	println("ohmygame.Scene:${scene}")
 
-	mut ship:= create_player_ship(
+	mut ship:= create_user_actionable_object(
 		"
 		      *
 		      #
@@ -38,7 +38,7 @@ pub fn test_render(){
 	)
 	println("ohmygame.Entity:${ship}")
 	scene.objects << ship
-	scene.update()
+	scene.update_canvas()
 
 	println("ohmygame.Scene:${scene}")
 
@@ -58,11 +58,11 @@ pub fn test_render_to_string(){
 	mut scene:=Scene{
 		objects:[]&Entity{}
 		canvas:canvas
-		frame:time.now()
+		frame: input_event_time_now()
 	}
 	dump("ohmygame.Scene:${scene}")
 
-	mut ship:= create_player_ship(
+	mut ship:= create_user_actionable_object(
 		"
 		      *
 		      #
@@ -82,20 +82,20 @@ pub fn test_render_to_string(){
 		print(ansi_cls)
 		ship.shape.anchor.x=ship.shape.anchor.x+1
 		term.clear()
-		scene.update()
+		scene.update_canvas()
 		print(scene.render_to_string())
 		flush_stdout()
 		time.sleep(0.3)
 	}
-	scene.update()
+	scene.update_canvas()
 	dump(scene.render_to_string())
 	ship.shape.anchor.x=ship.shape.anchor.x+2
 	dump(ship.shape)
-	scene.update()
+	scene.update_canvas()
 	dump(scene.render_to_string())
 	ship.shape.anchor.x=ship.shape.anchor.x+2
 	dump(ship.shape)
-	scene.update()
+	scene.update_canvas()
 	dump(scene.render_to_string())
 	dump(scene)
 }
