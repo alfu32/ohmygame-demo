@@ -14,7 +14,8 @@ pub fn (mut sc Scene) add_object(e &Entity) {
 }
 
 pub fn (mut sc Scene) is_finished() bool {
-	return sc.is_finished
+	return false
+	// return sc.is_finished
 }
 
 pub fn (mut sc Scene) update_canvas() {
@@ -25,9 +26,9 @@ pub fn (mut sc Scene) update_canvas() {
 		//}
 	}
 }
-pub fn (mut sc Scene)run_actions( frame InputEventTime, mut keyboard Keyboard ){
+pub fn (mut sc Scene)run_actions( frame InputEventTime, keyboard &Keyboard ){
 	for mut e in sc.objects {
-		e.run_actions(frame,mut &keyboard)
+		e.run_actions(frame,keyboard)
 	}
 }
 pub fn (mut sc Scene)remove_dead_entities(){

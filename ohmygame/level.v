@@ -1,19 +1,28 @@
 module ohmygame
 
-
 @[heap]
-struct Level{
+pub struct Level{
 	pub  mut:
-	scenes []Scene
+	scenes []&Scene
+	current_index int
+	current_scene &Scene
 }
 
-pub fn level_create() &Level{
+pub fn level_create(width int,height int, scenes []&Scene) &Level{
 	mut level:=&Level{
-		scenes:[Scene{
-			objects:[]&Entity{}
-			canvas:drawing_context_2d_create(144,45," ")
-			frame: input_event_time_now()
-		}],
+		scenes:scenes,
+		current_index:0,
+		current_scene:scenes[0],
 	}
 	return level
+}
+
+pub fn (mut level Level) is_finished(kbd &Keyboard) bool {
+	if level.current_scene.is_finished() {
+			level.current_index+=1
+			level.current_scene=level.scenes[level.current_index]
+			return false // will continue
+	} else {
+		return false // will continue
+	}
 }

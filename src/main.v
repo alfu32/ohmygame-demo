@@ -1,12 +1,13 @@
 module main
 
 import ohmygame as omg
-import time
 import term
+import time
 
 const millis = 1000000
 
 fn main() {
+	mut t := omg.Terminal{}
 	// initializing keyboard device
 	mut kbd := omg.Keyboard{location: "/tmp/kbev/events"}
 	kbd.init()
@@ -14,29 +15,46 @@ fn main() {
 	mut intro := omg.Scene{}
 	mut game := omg.Scene{}
 	mut end_scene := omg.Scene{}
-	mut scenes :=[]omg.Scene{
-		intro,
-		game,
-		end_scene,
-	}
-	mut current_scene_index:=0
-	mut current_scene := scenes[current_scene_index]
-	for {
+	intro.add_object(omg.create_splash_screen("
+		WELCOME TO THE DEMO
+		intro screen
+
+		press enter to continue ...
+	"))
+	game.add_object(omg.create_splash_screen("
+		WELCOME TO THE DEMO
+		game screen
+
+		press enter to continue ...
+	"))
+	end_scene.add_object(omg.create_splash_screen("
+		WELCOME TO THE DEMO
+		finish screen
+
+		press enter to continue ...
+	"))
+	mut level := omg.level_create(145,40,
+		[
+			&intro,
+			&game,
+			&end_scene,
+		]
+	)
+	dump(level)
+
+	for level.is_finished(&kbd){
 		kbd.refresh_state()
-		pressed:= kbd.get_pressed_keys()
-		print("\r${pressed}                       ")
 		if kbd.any_is_pressed(['escape']) {
 			break
 		}
+
+		level.current_scene.run_actions(omg.input_event_time_now(),kbd)
+		level.current_scene.do_collisions()
 		/// print("\r${kbd.pressed.keys()}")
+		t.clear()
+		level.current_scene.render_to_terminal(mut &t)
 		time.sleep(1000*1000*1)
-		if scenes[current_scene_index].is_finished() {
-			current_scene_index+=1
-			current_scene = scenes[current_scene_index]
-		}
-		if &current_scene == voidptr {
-			break
-		}
+		level.current_scene.remove_dead_entities()
 	}
 
 	// deinit keyboard
@@ -47,7 +65,7 @@ fn main0() {
 	mut scene:=omg.Scene{
 		objects:[]&omg.Entity{}
 		canvas:canvas
-		frame:time.now()
+		frame:omg.input_event_time_now()
 	}
 
 	mut ship:= omg.create_user_actionable_object(

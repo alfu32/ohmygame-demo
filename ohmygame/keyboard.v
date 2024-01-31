@@ -128,7 +128,7 @@ pub fn (mut self Keyboard) get_pressed_keys() []i32 {
 	}
 	return kb
 }
-pub fn (mut self Keyboard) any_is_pressed(key_names []string) bool {
+pub fn (self Keyboard) any_is_pressed(key_names []string) bool {
 	for k,v in self.pressed {
 		if v != 0 && key_name(k) in key_names{
 			return true
@@ -136,7 +136,7 @@ pub fn (mut self Keyboard) any_is_pressed(key_names []string) bool {
 	}
 	return false
 }
-pub fn (mut self Keyboard) all_are_pressed(key_names []string) bool {
+pub fn (self Keyboard) all_are_pressed(key_names []string) bool {
 	for kn in key_names {
 		if self.pressed[key_code(kn)] == 0  {
 			return false
