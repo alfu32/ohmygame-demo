@@ -75,8 +75,8 @@ function main(){
 
     echo "starting cat : "
     start_cat "$input_devices"
-    echo "waiting 1 hour : "
-    sleep 3600
+    echo "waiting 1 minute : "
+    sleep 60
     end_cat
     ls -la events
     echo "cycle done ::::::::::::::::::::::::::::::::: $(date) "

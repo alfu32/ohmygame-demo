@@ -82,3 +82,7 @@ pub fn (self Terminal) str() string {
 pub fn (self Terminal) dump_str() []u8 {
 	return self.stream.bytes()
 }
+pub fn (mut self Terminal) flush(){
+	println(self.stream)
+	self.clear()
+}

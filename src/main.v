@@ -5,16 +5,16 @@ import term
 import time
 
 const millis = 1000000
-
 fn main() {
 	mut t := omg.Terminal{}
 	// initializing keyboard device
 	mut kbd := omg.Keyboard{location: "/tmp/kbev/events"}
+	// mut kbd := omg.Keyboard{location: "/dev/input/event20"}
 	kbd.init()
 	// init scenes
-	mut intro := omg.Scene{}
-	mut game := omg.Scene{}
-	mut end_scene := omg.Scene{}
+	mut intro := omg.scene_create(120,40)
+	mut game := omg.scene_create(120,40)
+	mut end_scene := omg.scene_create(120,40)
 	intro.add_object(omg.create_splash_screen("
 		WELCOME TO THE DEMO
 		intro screen
@@ -40,25 +40,45 @@ fn main() {
 			&end_scene,
 		]
 	)
-	dump(level)
-
-	for level.is_finished(&kbd){
-		kbd.refresh_state()
-		if kbd.any_is_pressed(['escape']) {
-			break
+	mut running:=true
+	//for !level.is_finished(&kbd){
+	for running {
+		print('\x1b[2J')
+		print('\x1b[H')
+		flush_stdout()
+	  	// print_debug("kbd.refresh_state()")
+		mut evs :=map[omg.KeyCode]omg.InputEvent{}
+		evts:=kbd.dequeue_events()
+		// if kbd.any_is_pressed(['escape','key_256']) {
+		// 	println("exiting")
+		// 	running=false
+		// 	break
+		// }
+		for ev in evts {
+			evs[omg.key_code_from_int(ev.code >> 8)] = ev
+		}
+		// print("\r${evts}")
+		for k,v in evs {
+			println("${k:.10} : ${v.hex()}")
+		}
+		// print("\r${evs.values().map(it.hex()).join("\n")}")
+		flush_stdout()
+		if evts.filter(it.code==256 && it.value != 0).len != 0 {
+			running = false
+			println("exiting")
 		}
 
-		level.current_scene.run_actions(omg.input_event_time_now(),kbd)
-		level.current_scene.do_collisions()
-		/// print("\r${kbd.pressed.keys()}")
-		t.clear()
-		level.current_scene.render_to_terminal(mut &t)
-		time.sleep(1000*1000*1)
-		level.current_scene.remove_dead_entities()
+		//level.render(mut t, kbd)
+		// omg.print_debug("time.sleep(1000*1000*1)")
+		time.sleep(100*millis)
+
+		// t.flush()
 	}
 
 	// deinit keyboard
 	kbd.close()
+	// dump(level)
+	println("\n")
 }
 fn main0() {
 	mut canvas := omg.drawing_context_2d_create(160,15," ")
@@ -90,7 +110,7 @@ fn main0() {
 			ship.shape.anchor.x=-10
 		}
 		scene.update_canvas()
-		println(scene.render_to_string())
+		println(scene.canvas.render_to_string())
 		// flush_stdout()
 		time.sleep(1*millis)
 	}

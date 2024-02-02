@@ -81,6 +81,25 @@ pub fn (mut vp DrawingContext2D) clear() {
 pub fn (vp DrawingContext2D) print_at(x int, y int, figure string) {
 
 }
+pub fn (mut canvas DrawingContext2D) render_to_terminal(mut t &Terminal) {
+	border := "-".repeat(canvas.window.size.x)
+	t.clear()
+	t.putstr("+${border}+\n",Color.black,Color.white)
+	for y in 0..canvas.window.size.y {
+		t.putstr("#",Color.black,Color.white)
+		for x in 0..canvas.window.size.x {
+			char_at:= [canvas.buffer[y][x]].bytestr()
+			t.putstr(char_at,color_from_munber(canvas.background[y][x]),color_from_munber(canvas.foreground[y][x]))
+		}
+		t.putstr("#\n",Color.black,Color.white)
+	}
+	t.putstr("+${border}+",Color.black,Color.white)
+}
+pub fn (mut canvas DrawingContext2D) render_to_string() string{
+	mut t := Terminal{}
+	canvas.render_to_terminal(mut t)
+	return t.str()
+}
 
 pub fn (vp DrawingContext2D) str() string{
 	return "{

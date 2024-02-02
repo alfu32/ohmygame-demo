@@ -2,23 +2,34 @@ module ohmygame
 
 import time
 
-
+type Seconds = i64
+type Nanos = i64
+fn convert_seconds(s string) Seconds {
+	return s.i64()
+}
+fn convert_nanos(s string) Seconds {
+	return s.i64()
+}
 pub struct InputEventTime{
-	seconds u64
-	nanos u64
+	seconds Seconds
+	nanos Nanos
 }
 pub fn input_event_time_from_str(s string) InputEventTime {
 	t := s.split(".")
 	return InputEventTime {
-		seconds: (t[0]).u64()
-		nanos: (pad_end(t[1],9,'0')).u64()
+		// seconds: (t[0]).u32()
+		// nanos: (pad_end(t[1],9,'0')).u32()
+		seconds: convert_seconds(t[0])
+		nanos: convert_nanos(pad_end(t[1],9,'0'))
 	}
 }
 pub fn input_event_time_now() InputEventTime {
 	t := time.now()
 	return InputEventTime {
-		seconds: t.unix.str().u64()
-		nanos: t.nanosecond.str().u64()
+		// seconds: t.unix.str().u32()
+		// nanos: t.nanosecond.str().u32()
+		seconds: convert_seconds(t.unix.str())
+		nanos: convert_nanos(t.nanosecond.str())
 	}
 }
 pub fn (a InputEventTime) + (b InputEventTime) InputEventTime {
@@ -38,7 +49,7 @@ pub fn (a InputEventTime) - (b InputEventTime) InputEventTime {
 			nanos: n
 		}
 	} else {
-		n:=u64(1000000000)+(a.nanos)-(b.nanos)
+		n:=convert_nanos("1000000000")+(a.nanos)-(b.nanos)
 		s:=(a.seconds)-(b.seconds) - 1
 		return InputEventTime{
 			seconds: s
@@ -56,4 +67,8 @@ pub fn (a InputEventTime) ==(b InputEventTime) bool {
 pub fn (a InputEventTime) to_string() string{
 	nanos:=pad_start(a.nanos.str(),9,"0").substr(0,9)
 	return "${a.seconds}.${nanos}"
+}
+pub fn (a InputEventTime) hex() string{
+	// nanos:=pad_start(a.nanos.str(),9,"0").substr(0,9)
+	return "${a.seconds:08x}.${a.nanos:08x}"
 }

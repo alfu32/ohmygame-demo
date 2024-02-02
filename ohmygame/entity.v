@@ -47,7 +47,7 @@ pub fn create_splash_screen(figure string) &Entity {
 				max_uppdate_interval: input_event_time_from_str("0.300")
 				last_updated: input_event_time_now()
 				action_fn: fn ( mut e &Entity, mut scene &Scene, frame InputEventTime, keyboard &Keyboard ) {
-					if keyboard.any_is_pressed(["enter"]) {
+					if keyboard.any_is_pressed([KeyCode.esc]) {
 						e.life=0
 					}
 				}
