@@ -1,4 +1,4 @@
-module ohmygame
+module input
 
 
 pub fn test_less_than(){

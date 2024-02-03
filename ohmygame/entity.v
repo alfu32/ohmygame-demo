@@ -1,6 +1,7 @@
 module ohmygame
 
 import rand
+import input
 
 @[heap]
 pub struct Entity{
@@ -15,7 +16,7 @@ pub struct Entity{
 }
 
 
-pub fn (mut e Entity)run_actions( frame InputEventTime, keyboard &Keyboard ){
+pub fn (mut e Entity)run_actions( frame input.InputEventTime, keyboard &input.Keyboard ){
 	for mut a in e.actions {
 		if a.max_uppdate_interval < frame - a.last_updated {
 			a.action_fn(mut &e,mut &e.parent_scene,frame,keyboard)
@@ -36,7 +37,6 @@ pub fn create_user_actionable_object(figure string) &Entity {
 }
 
 pub fn create_splash_screen(figure string) &Entity {
-	mut index:=0
 	mut ent := &Entity {
 		instance_id: rand.uuid_v4()
 		shape: Shape{
@@ -45,26 +45,22 @@ pub fn create_splash_screen(figure string) &Entity {
 		actions: [
 			EntityAction {
 				parent_entity: Entity{}
-				max_uppdate_interval: input_event_time_from_str("0.001")
-				last_updated: input_event_time_now()
-				action_fn: fn [mut index]( mut e &Entity, mut scene &Scene, frame InputEventTime, keyboard &Keyboard ) {
-					for k in 3 .. 8 {
-						e.shape.figure[1][k]='\\|/-'[index]
-					}
-					index=(index+1)%4
-					if keyboard.is_pressed(KeyCode.space) {
+				max_uppdate_interval: input.input_event_time_from_str("0.001")
+				last_updated: input.input_event_time_now()
+				action_fn: fn ( mut e &Entity, mut scene &Scene, frame input.InputEventTime, keyboard &input.Keyboard ) {
+					if keyboard.is_pressed(input.KeyCode.space) {
 						e.life=0
 					}
-					if keyboard.is_pressed(KeyCode.a) {
+					if keyboard.is_pressed(input.KeyCode.a) {
 						e.shape.anchor.x -= 1
 					}
-					if keyboard.is_pressed(KeyCode.d) {
+					if keyboard.is_pressed(input.KeyCode.d) {
 						e.shape.anchor.x += 1
 					}
-					if keyboard.is_pressed(KeyCode.w) {
+					if keyboard.is_pressed(input.KeyCode.w) {
 						e.shape.anchor.y -= 1
 					}
-					if keyboard.is_pressed(KeyCode.s) {
+					if keyboard.is_pressed(input.KeyCode.s) {
 						e.shape.anchor.y += 1
 					}
 				}

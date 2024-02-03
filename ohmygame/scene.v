@@ -1,10 +1,12 @@
 module ohmygame
 
+import input
+
 pub struct Scene{
 	pub mut:
 	objects []&Entity
 	canvas DrawingContext2D
-	frame InputEventTime
+	frame input.InputEventTime
 	is_finished bool
 }
 
@@ -12,7 +14,7 @@ pub fn scene_create(width int,height int) Scene {
 	return Scene{
 		objects: []
 		canvas: drawing_context_2d_create(width,height," ")
-		frame: input_event_time_now()
+		frame: input.input_event_time_now()
 		is_finished: false
 	}
 }
@@ -34,7 +36,7 @@ pub fn (mut sc Scene) update_canvas() {
 		//}
 	}
 }
-pub fn (mut sc Scene)run_actions( frame InputEventTime, keyboard &Keyboard ){
+pub fn (mut sc Scene)run_actions( frame input.InputEventTime, keyboard &input.Keyboard ){
 	for mut e in sc.objects {
 		e.run_actions(frame,keyboard)
 	}

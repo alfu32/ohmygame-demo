@@ -1,14 +1,15 @@
 module ohmygame
 
 import math
+import input
 
 pub struct Derivative {
 	pub mut:
 	vector_diff Point
-	time_diff InputEventTime
+	time_diff input.InputEventTime
 }
 
-pub fn derivative_of(v0 Point,v1 Point,t0 InputEventTime,t1 InputEventTime) Derivative {
+pub fn derivative_of(v0 Point,v1 Point,t0 input.InputEventTime,t1 input.InputEventTime) Derivative {
 	mut v00 :=v0.copy()
 	mut v10 := v1.copy()
 	v10.amplify(-1)

@@ -37,7 +37,7 @@ example of polling the keyboard to get all the keys that are depressed.
     import time
     import term
 
-	mut kbd := omg.Keyboard{location: "/tmp/kbev/events"}
+	mut kbd := input.Keyboard{location: "/tmp/kbev/events"}
 	kbd.init()
 	//println(kbd)
 	println("\nstarting\n")

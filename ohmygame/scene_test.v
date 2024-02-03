@@ -3,6 +3,9 @@ module ohmygame
 import term.ui as tui
 import time
 import term
+import input
+
+
 
 
 
@@ -19,7 +22,7 @@ pub fn test_render(){
 	mut scene:=Scene{
 		objects:[]&Entity{}
 		canvas:canvas
-		frame: input_event_time_now()
+		frame: input.input_event_time_now()
 	}
 	println("ohmygame.Scene:${scene}")
 
@@ -58,7 +61,7 @@ pub fn test_render_to_string(){
 	mut scene:=Scene{
 		objects:[]&Entity{}
 		canvas:canvas
-		frame: input_event_time_now()
+		frame: input.input_event_time_now()
 	}
 	dump("ohmygame.Scene:${scene}")
 
@@ -83,19 +86,19 @@ pub fn test_render_to_string(){
 		ship.shape.anchor.x=ship.shape.anchor.x+1
 		term.clear()
 		scene.update_canvas()
-		print(scene.render_to_string())
+		print(scene.canvas.render_to_string())
 		flush_stdout()
 		time.sleep(0.3)
 	}
 	scene.update_canvas()
-	dump(scene.render_to_string())
+	dump(scene.canvas.render_to_string())
 	ship.shape.anchor.x=ship.shape.anchor.x+2
 	dump(ship.shape)
 	scene.update_canvas()
-	dump(scene.render_to_string())
+	dump(scene.canvas.render_to_string())
 	ship.shape.anchor.x=ship.shape.anchor.x+2
 	dump(ship.shape)
 	scene.update_canvas()
-	dump(scene.render_to_string())
+	dump(scene.canvas.render_to_string())
 	dump(scene)
 }

@@ -9,6 +9,9 @@ pub const ansi_color_blue         = "\x1b[34m"
 pub const ansi_color_magenta      = "\x1b[35m"
 pub const ansi_color_cyan         = "\x1b[36m"
 pub const ansi_color_white        = "\x1b[37m"
+pub fn ansi_color_rgb(r u8,g u8,b u8) string {
+	return "\x1b[38;2;${r};${g};${b}m"
+}
 
 // Background Color Codes
 pub const ansi_background_black   = "\x1b[40m"
@@ -19,6 +22,9 @@ pub const ansi_background_blue    = "\x1b[44m"
 pub const ansi_background_magenta = "\x1b[45m"
 pub const ansi_background_cyan    = "\x1b[46m"
 pub const ansi_background_white   = "\x1b[47m"
+pub fn ansi_background_rgb(r u8,g u8,b u8) string {
+	return "\x1b[48;2;${r};${g};${b}m"
+}
 
 // Formatting Codes
 pub const ansi_bold              = "\x1b[1m"

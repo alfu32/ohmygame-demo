@@ -1,4 +1,4 @@
-module ohmygame
+module utils
 
 
 pub fn pad_end(s string,max_len u32,pad_string string) string {

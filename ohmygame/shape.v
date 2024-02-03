@@ -1,5 +1,7 @@
 module ohmygame
 
+import utils
+
 
 pub fn normalized_figure(figure string) [][]u8 {
 	lines:=figure.replace_char(9,32,4).split("\n")
@@ -8,7 +10,7 @@ pub fn normalized_figure(figure string) [][]u8 {
 		if line.len > width {width = line.len}
 	}
 	return lines.map(fn[width](line string) []u8 {
-		return pad_end(line,u32(width)," ").bytes()
+		return utils.pad_end(line,u32(width)," ").bytes()
 	})
 }
 pub fn buffer_rotate2d_clockwise(figure [][]u8) [][]u8 {
@@ -75,12 +77,12 @@ pub struct Shape{
 	foreground [][]u8
 }
 pub fn (mut sh Shape) set_figure(fig string,color string,background string) Shape {
-	sh.figure = trim_indent(normalized_figure(fig)," ".bytes())
+	sh.figure = utils.trim_indent(normalized_figure(fig)," ".bytes())
 	height:=sh.figure.len
 	width:=sh.figure[0].len
 	sh.size=Point{x:width,y:height,z:1}
-	sh.background=trim_indent(normalized_figure(background)," ".bytes()).map(it.map(1+(it%3)))
-	sh.foreground=trim_indent(normalized_figure(color)," ".bytes()).map(it.map(3+((it)%4)))
+	sh.background=utils.trim_indent(normalized_figure(background)," ".bytes()).map(it.map(1+(it%3)))
+	sh.foreground=utils.trim_indent(normalized_figure(color)," ".bytes()).map(it.map(3+((it)%4)))
 	return sh
 }
 pub fn (mut sh Shape) rotate_figure() {
@@ -120,11 +122,11 @@ anchor: ${sh.anchor.str()}
 size: ${sh.size.str()}
 direction: ${sh.direction.str()}
 figure:BUFFER>>>
-${buffer_to_string(sh.figure)}BUFFER
+${utils.buffer_to_string(sh.figure)}BUFFER
 background:BUFFER>>>
-${buffer_to_numbers(sh.background)}BUFFER
+${utils.buffer_to_numbers(sh.background)}BUFFER
 foreground:BUFFER>>>
-${buffer_to_numbers(sh.foreground)}BUFFER
+${utils.buffer_to_numbers(sh.foreground)}BUFFER
 }
 	".trim_indent()
-} 
+}

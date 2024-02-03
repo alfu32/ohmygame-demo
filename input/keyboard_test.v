@@ -1,4 +1,4 @@
-module ohmygame
+module input
 
 import os
 import term.termios

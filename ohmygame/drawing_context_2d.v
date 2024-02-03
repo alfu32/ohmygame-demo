@@ -1,6 +1,7 @@
 module ohmygame
 
 import math
+import utils
 
 pub struct DrawingContext2D{
 	pub:
@@ -94,6 +95,7 @@ pub fn (mut canvas DrawingContext2D) render_to_terminal(mut t &Terminal) {
 		t.putstr("#\n",Color.black,Color.white)
 	}
 	t.putstr("+${border}+",Color.black,Color.white)
+	t.flush()
 }
 pub fn (mut canvas DrawingContext2D) render_to_string() string{
 	mut t := Terminal{}
@@ -106,11 +108,11 @@ pub fn (vp DrawingContext2D) str() string{
 type: DrawingContext2D,
 window: ${vp.window.str()},
 buffer:BUFFER>>>
-${buffer_to_string(vp.buffer)}BUFFER
+${utils.buffer_to_string(vp.buffer)}BUFFER
 background:BUFFER>>>
-${buffer_to_numbers(vp.background)}BUFFER
+${utils.buffer_to_numbers(vp.background)}BUFFER
 foreground:BUFFER>>>
-${buffer_to_numbers(vp.foreground)}BUFFER
+${utils.buffer_to_numbers(vp.foreground)}BUFFER
 }"
 }
 

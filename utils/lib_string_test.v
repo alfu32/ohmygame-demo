@@ -1,4 +1,4 @@
-module ohmygame
+module utils
 
 
 pub fn test_pad_end() {
