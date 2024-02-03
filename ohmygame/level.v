@@ -33,12 +33,13 @@ pub fn (mut level Level) render(mut t Terminal, kbd Keyboard){
 	level.current_scene.canvas.render_to_terminal(mut &t)
 }
 
-pub fn (mut level Level) is_finished() bool {
-	if level.current_scene.is_finished() {
-			level.current_index+=1
-			level.current_scene=level.scenes[level.current_index]
-			return false // will continue
-	} else {
-		return false // will continue
+pub fn (mut level Level) next() {
+	if ((level.current_index+1)<level.scenes.len) && level.current_scene.is_finished() {
+		level.current_index+=1
+		level.current_scene=level.scenes[level.current_index]
 	}
+}
+
+pub fn (mut level Level) is_finished() bool {
+	return level.current_scene.is_finished() && ((level.current_index+1)>=level.scenes.len)
 }

@@ -16,22 +16,28 @@ fn main() {
 	mut game := omg.scene_create(120,40)
 	mut end_scene := omg.scene_create(120,40)
 	intro.add_object(omg.create_splash_screen("
-		WELCOME TO THE DEMO
-		intro screen
+		WWWW           WWWW  EEEEEEEEE LLLL         CCCCCCCCC       OOOOOO     MMM          MMM EEEEEEEEE
+		WWWW           WWWW  EEEEEEEEE LLLL        CCCCCCCCCCC    OOOOOOOOOO   MMMMM      MMMMM EEEEEEEEE
+		WWWW           WWWW  EEE       LLLL       CCCC     CCCC  OOOO    OOOO  MMM MMMMMMMM MMM EEE
+		WWWW           WWWW  EEEEEEE   LLLL       CCC           OOOOO    OOOOO MMM    MMM   MMM EEEEEEE
+		WWWW     W     WWWW  EEE       LLLL       CCC           OOOOO    OOOOO MMM     M    MMM EEE
+		 WWWW   WWW   WWWW   EEE       LLLL       CCCC     CCCC  OOOO    OOOO  MMM          MMM EEE
+		  WWWW WWWWW WWWW    EEEEEEEEE LLLLLLLLL   CCCCCCCCCC     OOOOOOOOOO   MMM          MMM EEEEEEEEE
+		    WWWWW WWWWW      EEEEEEEEE LLLLLLLLL    CCCCCCCC        OOOOOO     MMM          MMM EEEEEEEEE
 
-		press enter to continue ...
+	     PRESS 'SPACE TO CONTINUE'
 	"))
 	game.add_object(omg.create_splash_screen("
 		WELCOME TO THE DEMO
 		game screen
 
-		press enter to continue ...
+		press SPACE to continue ...
 	"))
 	end_scene.add_object(omg.create_splash_screen("
 		WELCOME TO THE DEMO
 		finish screen
 
-		press enter to continue ...
+		press SPACE to EXIT ...
 	"))
 	mut level := omg.level_create(145,40,
 		[
@@ -48,8 +54,11 @@ fn main() {
 			running = false
 			println("exiting")
 		}
+
+		level.next()
 		if level.is_finished() {
 			running = false
+			break
 		} else {
 			level.render(mut t, kbd)
 			t.flush()
