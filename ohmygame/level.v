@@ -30,7 +30,7 @@ pub fn (mut level Level) render(mut t Terminal, kbd Keyboard){
 	print_debug("level.current_scene.do_collisions()")
 	level.current_scene.do_collisions()
 	/////////// print_debug("level.current_scene.remove_dead_entities()")
-	/////////// level.current_scene.remove_dead_entities()
+	level.current_scene.remove_dead_entities()
 	print_debug("level.current_scene.update_canvas()")
 	level.current_scene.update_canvas()
 	/// print("\r${kbd.pressed.keys()}")
@@ -42,7 +42,7 @@ pub fn (mut level Level) render(mut t Terminal, kbd Keyboard){
 	/// println(s)
 }
 
-pub fn (mut level Level) is_finished(kbd &Keyboard) bool {
+pub fn (mut level Level) is_finished() bool {
 	if level.current_scene.is_finished() {
 			level.current_index+=1
 			level.current_scene=level.scenes[level.current_index]

@@ -36,6 +36,7 @@ pub fn create_user_actionable_object(figure string) &Entity {
 }
 
 pub fn create_splash_screen(figure string) &Entity {
+	mut index:=0
 	mut ent := &Entity {
 		instance_id: rand.uuid_v4()
 		shape: Shape{
@@ -46,9 +47,13 @@ pub fn create_splash_screen(figure string) &Entity {
 				parent_entity: Entity{}
 				max_uppdate_interval: input_event_time_from_str("0.300")
 				last_updated: input_event_time_now()
-				action_fn: fn ( mut e &Entity, mut scene &Scene, frame InputEventTime, keyboard &Keyboard ) {
-					if keyboard.any_is_pressed([KeyCode.esc]) {
+				action_fn: fn [mut index]( mut e &Entity, mut scene &Scene, frame InputEventTime, keyboard &Keyboard ) {
+					if keyboard.any_is_pressed([KeyCode.enter,KeyCode.a]) {
+						for k in 3 .. 8 {
+							e.shape.figure[1][k]='\\|/-'[index]
+						}
 						e.life=0
+						index=(index+1)%4
 					}
 				}
 			}

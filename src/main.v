@@ -43,36 +43,19 @@ fn main() {
 	mut running:=true
 	//for !level.is_finished(&kbd){
 	for running {
-		print('\x1b[2J')
-		print('\x1b[H')
-		flush_stdout()
-	  	// print_debug("kbd.refresh_state()")
-		mut evs :=map[omg.KeyCode]omg.InputEvent{}
-		evts:=kbd.dequeue_events()
-		// if kbd.any_is_pressed(['escape','key_256']) {
-		// 	println("exiting")
-		// 	running=false
-		// 	break
-		// }
-		for ev in evts {
-			evs[omg.key_code_from_int(ev.code >> 8)] = ev
-		}
-		// print("\r${evts}")
-		for k,v in evs {
-			println("${k:.10} : ${v.hex()}")
-		}
-		// print("\r${evs.values().map(it.hex()).join("\n")}")
-		flush_stdout()
-		if evts.filter(it.code==256 && it.value != 0).len != 0 {
+		kbd.refresh_state()
+		if kbd.any_is_pressed([omg.KeyCode.esc]) {
 			running = false
 			println("exiting")
 		}
-
-		//level.render(mut t, kbd)
-		// omg.print_debug("time.sleep(1000*1000*1)")
-		time.sleep(100*millis)
-
-		// t.flush()
+		if level.is_finished() {
+			running = false
+		} else {
+			level.render(mut t, kbd)
+			t.flush()
+			// omg.print_debug("time.sleep(1000*1000*1)")
+			time.sleep(100*millis)
+		}
 	}
 
 	// deinit keyboard

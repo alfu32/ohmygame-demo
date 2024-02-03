@@ -15,7 +15,7 @@ pub struct Keyboard{
 	pub mut:
 	file os.File
 	events []InputEvent
-	pressed map[KeyCode]i32
+	pressed map[KeyCode]InputEvent
 	stdin os.File
 	original_term termios.Termios
 	silent_term termios.Termios
@@ -114,13 +114,7 @@ pub fn (mut self Keyboard) refresh_state() Keyboard {
 	events := self.dequeue_events()
 	//println("found ${kb.events.len}")
 	for ev in events {
-		if ev.typ == 0x01 {
-			if ev.value == 0 {
-				self.pressed[key_code_from_int(ev.code)]=0
-			} else {
-				self.pressed[key_code_from_int(ev.code)]=ev.code
-			}
-		}
+		self.pressed[key_code_from_int(ev.code >> 8)]=ev
 	}
 	self.events = []
 	self.events << events
@@ -129,26 +123,26 @@ pub fn (mut self Keyboard) refresh_state() Keyboard {
 pub fn (mut self Keyboard) get_pressed_keys() []KeyCode {
 	mut kb:= []KeyCode{}
 	for k,v in self.pressed {
-		if v != 0 {
+		if v.value != 0 {
 			kb << k
 		}
 	}
 	return kb
 }
-pub fn (self Keyboard) any_is_pressed(key_names []KeyCode) bool {
+pub fn (self Keyboard) any_is_pressed(keys []KeyCode) bool {
 	for k,v in self.pressed {
-		if v != 0 && k in key_names{
+		if v.value != 0 && k in keys{
 			return true
 		}
 	}
 	return false
 }
 pub fn (self Keyboard) is_pressed(key KeyCode) bool {
-	return self.pressed[key] != 0
+	return self.pressed[key].value != 0
 }
 pub fn (self Keyboard) all_are_pressed(keys []KeyCode) bool {
 	for kn in keys {
-		if self.pressed[kn] == 0  {
+		if self.pressed[kn].value == 0  {
 			return false
 		}
 	}

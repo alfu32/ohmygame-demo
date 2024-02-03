@@ -23,8 +23,7 @@ pub fn (mut sc Scene) add_object(e &Entity) {
 }
 
 pub fn (mut sc Scene) is_finished() bool {
-	return false
-	// return sc.is_finished
+	return sc.objects.filter(it.life>0).len == 0
 }
 
 pub fn (mut sc Scene) update_canvas() {
