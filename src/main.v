@@ -51,17 +51,19 @@ fn main() {
 	//for !level.is_finished(&kbd){
 	for mut scene in level.scenes {
 		for running && !scene.is_finished() {
+			frame := input.input_event_time_now()
 			kbd.refresh_state()
 			if kbd.any_is_pressed([input.KeyCode.esc]) {
 				running = false
 				println("exiting")
 				break
 			}
-			scene.run_actions(input.input_event_time_now(),&kbd)
+			scene.run_actions(frame,&kbd)
 			scene.do_collisions()
 			scene.remove_dead_entities()
 			scene.update_canvas()
 			t.clear()
+			/// println(frame)
 			scene.canvas.render_to_terminal(mut &t)
 			// omg.print_debug("time.sleep(1000*1000*1)")
 			time.sleep(100*millis)

@@ -74,7 +74,8 @@ pub fn (mut self Terminal) putstr(str string, background Color, color Color) {
 pub fn (mut self Terminal) clear() {
 	self.background(Color.black)
 	self.color(Color.white)
-	self.stream = "\x1b[3J\x1b[0,0H"
+	// self.stream = "\x1b[3J"
+	self.stream = "\x1b[H"
 }
 pub fn (self Terminal) str() string {
 	return "${self.stream}"
@@ -83,6 +84,6 @@ pub fn (self Terminal) dump_str() []u8 {
 	return self.stream.bytes()
 }
 pub fn (mut self Terminal) flush(){
-	println(self.stream)
+	print(self.stream)
 	self.clear()
 }
