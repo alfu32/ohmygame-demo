@@ -27,7 +27,7 @@ fn main() {
 		  WWWW WWWWW WWWW    EEEEEEEEE LLLLLLLLL   CCCCCCCCCC     OOOOOOOOOO   MMM          MMM EEEEEEEEE
 		    WWWWW WWWWW      EEEEEEEEE LLLLLLLLL    CCCCCCCC        OOOOOO     MMM          MMM EEEEEEEEE
 
-	     PRESS 'SPACE TO CONTINUE'
+	     PRESS 'q' TO CONTINUE
 	"))
 	mut ship :=omg.Entity{
 		parent_scene: game
@@ -47,7 +47,7 @@ fn main() {
 		"
 		----###
 		   <# ###>
-		  +++(====)#####
+		  +++(====)#####\a
 		   <# ###>
 		----###
 		",
@@ -68,10 +68,14 @@ fn main() {
 	)
 	game.add_object(ship)
 	end_scene.add_object(omg.create_splash_screen("
-		WELCOME TO THE DEMO
-		finish screen
+		TTTTTTTTT  HHH   HHH EEEEEEEE      EEEEEEEE NNN    NN  DDDDDD
+		   TTT     HHH   HHH EEE           EEE      NNNNN  NN  DDD   DD
+		   TTT     HHHHHHHHH EEEEEE        EEEEEE   NNN NN NN  DDD    DD
+		   TTT     HHH   HHH EEE           EEE      NNN  NNNN  DDD    DD
+		   TTT     HHH   HHH EEE           EEE      NNN    NN  DDD   DD
+		   TTT     HHH   HHH EEEEEEEE      EEEEEEEE NNN    NN  DDDDDD
 
-		press SPACE to EXIT ...
+		               press q to EXIT ...
 	"))
 	mut level := omg.level_create(145,35,
 		[
@@ -99,7 +103,7 @@ fn main() {
 			/// println(frame)
 			scene.canvas.render_to_terminal(mut &t)
 			// omg.print_debug("time.sleep(1000*1000*1)")
-			time.sleep(100*millis)
+			/// time.sleep(100 * millis)
 		}
 	}
 

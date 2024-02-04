@@ -44,7 +44,7 @@ pub fn create_splash_screen(figure string) &Entity {
 		},
 		actions: [
 			action_move_using_keys(input.input_event_time_from_str("0.001"),[input.KeyCode.a,input.KeyCode.d,input.KeyCode.w,input.KeyCode.s])
-			action_self_distruct(input.input_event_time_from_str("0.001"),input.KeyCode.o)
+			action_self_distruct(input.input_event_time_from_str("0.001"),input.KeyCode.q)
 		]
 	}
 	ent.shape.set_figure(figure,figure,figure)
