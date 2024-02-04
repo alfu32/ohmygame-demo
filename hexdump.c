@@ -1,10 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define BUFFER_SIZE 24
-
 void printHexDump(FILE *file, int bytesPerRow) {
-    unsigned char buffer[BUFFER_SIZE];
+    unsigned char buffer[bytesPerRow];
     size_t bytesRead;
     size_t offset = 0;
 
