@@ -4,6 +4,7 @@ import ohmygame as omg
 import term
 import time
 import input
+import rand
 
 const millis = 1000000
 fn main() {
@@ -28,12 +29,44 @@ fn main() {
 
 	     PRESS 'SPACE TO CONTINUE'
 	"))
-	game.add_object(omg.create_splash_screen("
-		WELCOME TO THE DEMO
-		game screen
-
-		press SPACE to continue ...
-	"))
+	mut ship :=omg.Entity{
+		parent_scene: game
+		instance_id: rand.uuid_v4()
+		user: 'root'
+		shape: omg.Shape{
+			anchor: omg.Point{10,10,0}
+		}
+		actions: [
+			omg.action_move_using_keys(input.input_event_time_from_str("0.0001"),[input.KeyCode.left,input.KeyCode.right,input.KeyCode.up,input.KeyCode.down])
+			omg.action_self_distruct(input.input_event_time_from_str("0.0001"),input.KeyCode.o)
+		]
+		life: 100
+		power: 1
+	}
+	ship.shape.set_figure(
+		"
+		----###
+		   <# ###>
+		  +++(====)#####
+		   <# ###>
+		----###
+		",
+		"
+		0000000
+		   0000000
+		  000000000000000
+		   0000000
+		0000000
+		",
+		"
+		1111111
+		   1111111
+		  11111111111111
+		   1111111
+		1111111
+		"
+	)
+	game.add_object(ship)
 	end_scene.add_object(omg.create_splash_screen("
 		WELCOME TO THE DEMO
 		finish screen

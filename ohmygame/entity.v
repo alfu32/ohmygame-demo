@@ -43,28 +43,8 @@ pub fn create_splash_screen(figure string) &Entity {
 			anchor: Point{2,3,4}
 		},
 		actions: [
-			EntityAction {
-				parent_entity: Entity{}
-				max_uppdate_interval: input.input_event_time_from_str("0.001")
-				last_updated: input.input_event_time_now()
-				action_fn: fn ( mut e &Entity, mut scene &Scene, frame input.InputEventTime, keyboard &input.Keyboard ) {
-					if keyboard.is_pressed(input.KeyCode.space) {
-						e.life=0
-					}
-					if keyboard.is_pressed(input.KeyCode.a) {
-						e.shape.anchor.x -= 1
-					}
-					if keyboard.is_pressed(input.KeyCode.d) {
-						e.shape.anchor.x += 1
-					}
-					if keyboard.is_pressed(input.KeyCode.w) {
-						e.shape.anchor.y -= 1
-					}
-					if keyboard.is_pressed(input.KeyCode.s) {
-						e.shape.anchor.y += 1
-					}
-				}
-			}
+			action_move_using_keys(input.input_event_time_from_str("0.001"),[input.KeyCode.a,input.KeyCode.d,input.KeyCode.w,input.KeyCode.s])
+			action_self_distruct(input.input_event_time_from_str("0.001"),input.KeyCode.o)
 		]
 	}
 	ent.shape.set_figure(figure,figure,figure)
