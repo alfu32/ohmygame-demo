@@ -14,12 +14,8 @@ void printHexDump(FILE *file, int bytesPerRow) {
 
             if ((i + 1) % bytesPerRow == 0 || i == bytesRead - 1) {
                 // Add extra space for alignment in the last row
-                size_t spaces = bytesPerRow - (i + 1) % bytesPerRow;
-                for (size_t j = 0; j < spaces; j++) {
-                    printf("   ");
-                }
 
-                printf("| ");
+                printf("   | ");
                 for (size_t j = i - i % bytesPerRow; j <= i; j++) {
                     // Print ASCII representation, replacing non-printable characters with '.'
                     char c = (buffer[j] >= 32 && buffer[j] <= 126) ? buffer[j] : '.';
