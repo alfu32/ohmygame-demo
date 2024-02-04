@@ -5,6 +5,9 @@ import input
 pub struct Scene{
 	pub mut:
 	objects []&Entity
+		// TODO move canvas out of the scene
+		// the scene should be more like a collection of entities
+		//   that does collisions and cleanup
 	canvas DrawingContext2D
 	frame input.InputEventTime
 	is_finished bool
@@ -14,7 +17,6 @@ pub fn scene_create(width int,height int) Scene {
 	return Scene{
 		objects: []
 		canvas: drawing_context_2d_create(width,height," ")
-		frame: input.input_event_time_now()
 		is_finished: false
 	}
 }
@@ -28,6 +30,7 @@ pub fn (mut sc Scene) is_finished() bool {
 	return sc.objects.filter(it.life>0).len == 0
 }
 
+// TODO add reference to the canvas it is rendering onto
 pub fn (mut sc Scene) update_canvas() {
 	sc.canvas.clear()
 	for ent in sc.objects{

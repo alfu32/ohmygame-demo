@@ -117,7 +117,6 @@ fn main0() {
 	mut scene:=omg.Scene{
 		objects:[]&omg.Entity{}
 		canvas:canvas
-		frame:input.input_event_time_now()
 	}
 
 	mut ship:= omg.create_user_actionable_object(

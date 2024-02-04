@@ -22,7 +22,6 @@ pub fn test_render(){
 	mut scene:=Scene{
 		objects:[]&Entity{}
 		canvas:canvas
-		frame: input.input_event_time_now()
 	}
 	println("ohmygame.Scene:${scene}")
 
@@ -61,7 +60,6 @@ pub fn test_render_to_string(){
 	mut scene:=Scene{
 		objects:[]&Entity{}
 		canvas:canvas
-		frame: input.input_event_time_now()
 	}
 	dump("ohmygame.Scene:${scene}")
 
