@@ -2,6 +2,7 @@ module ohmygame
 
 import math
 import utils
+import input
 
 pub struct DrawingContext2D{
 	pub:
@@ -34,6 +35,9 @@ pub fn (mut vp DrawingContext2D) resize(width int,height int) {
 	vp.background = [][]u8{len: height, init: []u8{len: width,init: 0}}
 	vp.foreground = [][]u8{len: height, init: []u8{len: width,init: 0}}
 
+}
+pub fn (mut ctx DrawingContext2D) autoresize(kbd &input.Keyboard) {
+	// if
 }
 pub fn (mut vp DrawingContext2D) print_shape(sh Shape) {
 	mut vp_lines:=vp.buffer.map(it[0..it.len])

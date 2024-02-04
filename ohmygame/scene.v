@@ -8,15 +8,15 @@ pub struct Scene{
 		// TODO move canvas out of the scene
 		// the scene should be more like a collection of entities
 		//   that does collisions and cleanup
-	canvas DrawingContext2D
+	// canvas DrawingContext2D
 	frame input.InputEventTime
 	is_finished bool
 }
 
-pub fn scene_create(width int,height int) Scene {
+pub fn scene_create() Scene {
 	return Scene{
 		objects: []
-		canvas: drawing_context_2d_create(width,height," ")
+		// canvas: drawing_context_2d_create(width,height," ")
 		is_finished: false
 	}
 }
@@ -31,11 +31,11 @@ pub fn (mut sc Scene) is_finished() bool {
 }
 
 // TODO add reference to the canvas it is rendering onto
-pub fn (mut sc Scene) update_canvas() {
-	sc.canvas.clear()
+pub fn (mut sc Scene) update_canvas(mut canvas DrawingContext2D) {
+	canvas.clear()
 	for ent in sc.objects{
 		//if sc.canvas.window.intersects(ent.shape.get_bounding_rectangle()) {
-			sc.canvas.print_shape(ent.shape)
+			canvas.print_shape(ent.shape)
 		//}
 	}
 }

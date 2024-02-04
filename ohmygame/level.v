@@ -26,13 +26,13 @@ fn print_debug(s string){
 		println(s)
 	}
 }
-pub fn (mut level Level) render(mut t Terminal, kbd input.Keyboard){
+pub fn (mut level Level) render(mut t Terminal,mut canvas DrawingContext2D, kbd input.Keyboard){
 	level.current_scene.run_actions(input.input_event_time_now(),kbd)
 	level.current_scene.do_collisions()
 	level.current_scene.remove_dead_entities()
-	level.current_scene.update_canvas()
+	level.current_scene.update_canvas(mut canvas)
 	t.clear()
-	level.current_scene.canvas.render_to_terminal(mut &t)
+	canvas.render_to_terminal(mut &t)
 }
 
 pub fn (mut level Level) next() {

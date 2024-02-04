@@ -50,3 +50,29 @@ pub fn create_splash_screen(figure string) &Entity {
 	ent.shape.set_figure(figure,figure,figure)
 	return ent
 }
+pub fn create_entity_rocket(figure string,parent &Entity) &Entity {
+	mut anchor:=Point{
+		parent.shape.anchor.x + parent.shape.size.x,
+		parent.shape.anchor.y + parent.shape.size.y/2,
+		parent.shape.anchor.z + parent.shape.size.z
+	}
+	mut ent := &Entity {
+		instance_id: rand.uuid_v4()
+		shape: Shape{
+			anchor: anchor
+		},
+		actions: [
+			action_fn(
+				input.input_event_time_from_str("0.001"),
+				fn ( mut e &Entity, mut scene &Scene, frame input.InputEventTime, keyboard &input.Keyboard ) {
+					e.shape.anchor.x+=1
+					e.life-=1
+				}
+			)
+		],
+		life: 50,
+		power: 10,
+	}
+	ent.shape.set_figure(figure,figure,figure)
+	return ent
+}

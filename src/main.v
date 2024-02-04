@@ -13,10 +13,11 @@ fn main() {
 	mut kbd := input.Keyboard{location: "/tmp/kbev/events"}
 	// mut kbd := omg.Keyboard{location: "/dev/input/event20"}
 	kbd.init()
+	mut canvas:= omg.drawing_context_2d_create(120,35," ")
 	// init scenes
-	mut intro := omg.scene_create(120,35)
-	mut game := omg.scene_create(120,35)
-	mut end_scene := omg.scene_create(120,35)
+	mut intro := omg.scene_create()
+	mut game := omg.scene_create()
+	mut end_scene := omg.scene_create()
 	intro.add_object(omg.create_splash_screen("
 		WWWW           WWWW  EEEEEEEEE LLLL         CCCCCCCCC       OOOOOO     MMM          MMM EEEEEEEEE
 		WWWW           WWWW  EEEEEEEEE LLLL        CCCCCCCCCCC    OOOOOOOOOO   MMMMM      MMMMM EEEEEEEEE
@@ -39,6 +40,14 @@ fn main() {
 		actions: [
 			omg.action_move_using_keys(input.input_event_time_from_str("0.0001"),[input.KeyCode.left,input.KeyCode.right,input.KeyCode.up,input.KeyCode.down])
 			omg.action_self_distruct(input.input_event_time_from_str("0.0001"),input.KeyCode.o)
+			omg.action_fn(
+			input.input_event_time_from_str("0.0001"),
+			fn [mut game]( mut e &omg.Entity, mut scene &omg.Scene, frame input.InputEventTime, keyboard &input.Keyboard ) {
+				if keyboard.is_pressed(input.KeyCode.z) {
+					mut bullet := omg.create_entity_rocket("====->",e)
+					game.add_object(bullet)
+				}
+			})
 		]
 		life: 100
 		power: 1
@@ -90,6 +99,7 @@ fn main() {
 		for running && !scene.is_finished() {
 			frame := input.input_event_time_now()
 			kbd.refresh_state()
+			canvas.autoresize(kbd)
 			if kbd.any_is_pressed([input.KeyCode.esc]) {
 				running = false
 				println("exiting")
@@ -98,51 +108,64 @@ fn main() {
 			scene.run_actions(frame,&kbd)
 			scene.do_collisions()
 			scene.remove_dead_entities()
-			scene.update_canvas()
+			scene.update_canvas(mut canvas)
 			t.clear()
 			/// println(frame)
-			scene.canvas.render_to_terminal(mut &t)
+			canvas.render_to_terminal(mut &t)
 			// omg.print_debug("time.sleep(1000*1000*1)")
 			/// time.sleep(100 * millis)
 		}
 	}
+	test_keys(mut kbd)
 
 	// deinit keyboard
 	kbd.close()
 	// dump(level)
 	println("\n")
-}
-fn main0() {
-	mut canvas := omg.drawing_context_2d_create(160,15," ")
-	mut scene:=omg.Scene{
-		objects:[]&omg.Entity{}
-		canvas:canvas
+	mut evtypes:=map[u16]input.InputEvent{}
+	for ev in kbd.events {
+		evtypes[ev.typ]=ev
 	}
+	for k,e in evtypes {
+		println("${k:10} : ${e}")
+	}
+}
 
-	mut ship:= omg.create_user_actionable_object(
-		"
-		      *
-		      #
-		:     ##
-		##   :###
-		###::#####:::>
-		##   :###
-		:     ##
-		      #
-		      *
-		",
-	)
-	scene.objects << ship
-	for _ in 1..1000 {
-		// term.erase_display("3")
-		term.set_cursor_position(x:0,y:0)
-		ship.shape.anchor.x=ship.shape.anchor.x+1
-		if ship.shape.anchor.x > 149 {
-			ship.shape.anchor.x=-10
+fn test_keys(mut kbd &input.Keyboard) {
+	mut running:=true
+	for running {
+		print('\x1b[2J')
+		print('\x1b[H')
+		flush_stdout()
+		kbd.refresh_state()
+		// print_debug("kbd.refresh_state()")
+		mut evs :=map[input.KeyCode]input.InputEvent{}
+		evts:=kbd.events
+		// if kbd.any_is_pressed(['escape','key_256']) {
+		// 	println("exiting")
+		// 	running=false
+		// 	break
+		// }
+		///for ev in evts {
+		///	evs[omg.key_code_from_int(ev.code >> 8)] = ev
+		///}
+		// print("\r${evts}")
+		for k,v in kbd.pressed {
+			if v.value != 0{
+				println("${k:30} : ${v.hex()}")
+			}
 		}
-		scene.update_canvas()
-		println(scene.canvas.render_to_string())
-		// flush_stdout()
-		time.sleep(1*millis)
+		// print("\r${evs.values().map(it.hex()).join("\n")}")
+		flush_stdout()
+		if kbd.any_is_pressed([input.KeyCode.esc]) {
+			running = false
+			println("exiting")
+		}
+
+		//level.render(mut t, kbd)
+		// omg.print_debug("time.sleep(1000*1000*1)")
+		time.sleep(100*millis)
+
+		// t.flush()
 	}
 }
