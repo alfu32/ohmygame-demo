@@ -19,14 +19,6 @@ pub struct Keyboard{
 	stdin os.File
 	original_term termios.Termios
 	silent_term termios.Termios
-
-	stdin_at_startup u32
-	use_alternate_buffer bool
-	hide_cursor bool
-
-	// get the standard input handle
-	stdin_handle voidptr
-	stdout_handle voidptr
 }
 fn copy_termios(src termios.Termios) termios.Termios {
 	// mut cpcc:=[termios.cclen]termios.Cc{}
@@ -91,7 +83,7 @@ pub fn (mut kb Keyboard) dequeue_events() []InputEvent {
 			// iev.event_timestamp.nanos = iev.event_timestamp.nanos >> 8
 			iev.typ = iev.typ >> 0
 			iev.code = iev.code >> 0
-			iev.value = iev.value >> 0
+			iev.x = iev.x >> 0
 			events << iev
 		}
 	}
@@ -123,7 +115,7 @@ pub fn (mut self Keyboard) refresh_state() Keyboard {
 pub fn (mut self Keyboard) get_pressed_keys() []KeyCode {
 	mut kb:= []KeyCode{}
 	for k,v in self.pressed {
-		if v.value != 0 {
+		if v.x != 0 {
 			kb << k
 		}
 	}
@@ -131,18 +123,18 @@ pub fn (mut self Keyboard) get_pressed_keys() []KeyCode {
 }
 pub fn (self Keyboard) any_is_pressed(keys []KeyCode) bool {
 	for k,v in self.pressed {
-		if v.value != 0 && k in keys{
+		if v.x != 0 && k in keys{
 			return true
 		}
 	}
 	return false
 }
 pub fn (self Keyboard) is_pressed(key KeyCode) bool {
-	return self.pressed[key].value != 0
+	return self.pressed[key].x != 0
 }
 pub fn (self Keyboard) all_are_pressed(keys []KeyCode) bool {
 	for kn in keys {
-		if self.pressed[kn].value == 0  {
+		if self.pressed[kn].x == 0  {
 			return false
 		}
 	}
@@ -172,13 +164,14 @@ pub struct InputEvent{
 	event_timestamp InputEventTime
 	typ u16
 	code u16
-	value u32
+	x u16
+	y u16
 }
 pub fn (ie InputEvent) str() string {
-	return "InputEvent{timestamp:${ie.event_timestamp.hex()},typ:${ie.typ},code:${ie.code},value:${ie.value}}"
+	return "InputEvent{timestamp:${ie.event_timestamp.hex()},typ:${ie.typ},code:${ie.code},x:${ie.y},x:${ie.y}}"
 }
 pub fn (ie InputEvent) hex() string {
-	return "InputEvent{T ${ie.event_timestamp.hex()} TY ${ie.typ:04x} C ${ie.code:04X} V ${ie.value:04x}}"
+	return "InputEvent{T ${ie.event_timestamp.hex()} TY ${ie.typ:04x} C ${ie.code:04X} V ${ie.x:04x},${ie.y:04x}}"
 }
 pub fn (ev InputEvent) key_name() string {
 	return key_code_from_int(ev.code).str()

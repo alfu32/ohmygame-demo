@@ -1,0 +1,95 @@
+#!/bin/bash
+
+# Function to detect input devices and return a list
+function get_keyboard_input_devices_list() {
+  # initialize a list of input devices full paths
+  input_devices_list=()
+  # populate in
+  for device in /dev/input/event*; do
+    if udevadm info -a -n "$device" | grep -q "eyboard"; then
+      input_devices_list+=("$device")
+    fi
+  done
+  echo "${input_devices_list[@]}"
+}
+function start_cat {
+  local input_devices="$1"
+  IFS=$' '
+  kb_index=0
+  for device in $input_devices; do
+    # ../.././read-event $device
+    devnum=$(grep '[0-9]' "$device")
+    cat -u "kb0$devnum" $device >> keyboard_events &
+    cat -u "kb1$devnum" $device >> "keyboard_$kb_index" &
+    kb_index=$((kb_index+1))
+  done
+  IFS=$' \t\n'
+}
+function end_cat {
+  local cat_processes
+  cat_processes=$(ps -eo cmd,pid | egrep "^cat -u kb[0-9]+")
+  IFS=$'\n'
+  ## rm -rf keyboard_events
+  for process in $cat_processes; do
+    echo "killing proc $(echo "$process" | grep -oP '[0-9]+$'), launch_cmd = $process"
+    kill -SIGTERM $(echo "$process" | grep -oP '[0-9]+$')
+  done
+  IFS=$' \t\n'
+}
+
+service_running=true
+# Function to handle SIGINT (Ctrl+C)
+function interrupt_handler {
+  echo ""
+  echo "Received Ctrl+C. Cleaning up and exiting..."
+  # Add your cleanup code here if needed
+  service_running=false
+  end_cat
+  exit 1
+}
+
+function main(){
+
+  # Set a trap to call the interrupt_handler function when SIGINT is received
+  trap interrupt_handler SIGINT
+  trap interrupt_handler SIGTERM
+  trap interrupt_handler SIGHUP
+
+
+  current=$(pwd)
+  mkdir -p /tmp/kbev && cd /tmp/kbev || exit
+  echo "configured keyboard_events service in  : /tmp/kbev"
+
+  #ExecStartPre
+
+
+  #ExecStart
+  while $service_running; do
+
+    input_devices=$(get_keyboard_input_devices_list)
+    echo $input_devices > input_devices.lst
+    echo "detected input devices : $input_devices"
+    echo "configuring service : "
+    chmod 777 input_devices.lst
+    touch keyboard_events
+    chmod 777 keyboard_events
+
+    echo "starting cat : "
+    start_cat "$input_devices"
+    echo "waiting 1 minute : "
+    sleep 60
+    end_cat
+    ls -la keyboard_events
+    echo "cycle done ::::::::::::::::::::::::::::::::: $(date) "
+    echo "" > keyboard_events
+  done
+  #ExecStop=
+
+  # Enable echoing
+  # stty echo
+  echo "keyboard event service exited"
+  cd "$current" || exit
+
+}
+
+main

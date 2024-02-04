@@ -10,7 +10,8 @@ const millis = 1000000
 fn main() {
 	mut t := omg.Terminal{}
 	// initializing keyboard device
-	mut kbd := input.Keyboard{location: "/tmp/kbev/events"}
+	mut kbd := input.Keyboard{location: "/tmp/kbev/keyboard_events"}
+	mut mouse := input.Mouse{location: "/tmp/kbev/mouse_events"}
 	// mut kbd := omg.Keyboard{location: "/dev/input/event20"}
 	kbd.init()
 	mut canvas:= omg.drawing_context_2d_create(120,35," ")
@@ -99,6 +100,7 @@ fn main() {
 		for running && !scene.is_finished() {
 			frame := input.input_event_time_now()
 			kbd.refresh_state()
+			mouse.refresh_state()
 			canvas.autoresize(kbd)
 			if kbd.any_is_pressed([input.KeyCode.esc]) {
 				running = false
@@ -116,56 +118,49 @@ fn main() {
 			/// time.sleep(100 * millis)
 		}
 	}
-	test_keys(mut kbd)
+
+	test_keys(mut kbd,mut mouse)
 
 	// deinit keyboard
 	kbd.close()
 	// dump(level)
 	println("\n")
-	mut evtypes:=map[u16]input.InputEvent{}
 	for ev in kbd.events {
-		evtypes[ev.typ]=ev
+		println("keyboard : ${ev.hex()}")
 	}
-	for k,e in evtypes {
-		println("${k:10} : ${e}")
+	for ev in mouse.events {
+		println("mouse    : ${ev.hex()}")
 	}
 }
 
-fn test_keys(mut kbd &input.Keyboard) {
+fn test_keys(mut kbd &input.Keyboard,mut mouse &input.Mouse) {
 	mut running:=true
 	for running {
-		print('\x1b[2J')
+		// print('\x1b[2J')
 		print('\x1b[H')
 		flush_stdout()
+		print('\x1b[2J')
+		flush_stdout()
 		kbd.refresh_state()
+		mouse.refresh_state()
 		// print_debug("kbd.refresh_state()")
 		mut evs :=map[input.KeyCode]input.InputEvent{}
-		evts:=kbd.events
-		// if kbd.any_is_pressed(['escape','key_256']) {
-		// 	println("exiting")
-		// 	running=false
-		// 	break
-		// }
-		///for ev in evts {
-		///	evs[omg.key_code_from_int(ev.code >> 8)] = ev
-		///}
-		// print("\r${evts}")
 		for k,v in kbd.pressed {
-			if v.value != 0{
-				println("${k:30} : ${v.hex()}")
+			if v.x != 0{
+				print("keyboard : ${k:30} : ${v.hex()}\n")
 			}
 		}
-		// print("\r${evs.values().map(it.hex()).join("\n")}")
+		for k,v in kbd.pressed {
+			if v.x != 0{
+				print("mouse    : ${k:30} : ${v.hex()}\n")
+			}
+		}
 		flush_stdout()
-		if kbd.any_is_pressed([input.KeyCode.esc]) {
+		if kbd.any_is_pressed([input.KeyCode.p]) {
 			running = false
 			println("exiting")
 		}
-
-		//level.render(mut t, kbd)
-		// omg.print_debug("time.sleep(1000*1000*1)")
 		time.sleep(100*millis)
-
-		// t.flush()
+		// print('\x1b[H')
 	}
 }

@@ -6,7 +6,7 @@ function get_keyboard_input_devices_list() {
   input_devices_list=()
   # populate in
   for device in /dev/input/event*; do
-    if udevadm info -a -n "$device" | grep -q "eyboard"; then
+    if udevadm info -a -n "$device" | grep -q "ouse"; then
       input_devices_list+=("$device")
     fi
   done
@@ -18,17 +18,18 @@ function start_cat {
   kb_index=0
   for device in $input_devices; do
     # ../.././read-event $device
-    cat -u $device $device >> events &
-    cat -u $device $device >> "keyboard_$kb_index" &
+    devnum=$(grep '[0-9]' "$device")
+    cat -u "mou0$devnum" $device >> mouse_events &
+    cat -u "mou1$devnum" $device >> "mouse_$kb_index" &
     kb_index=$((kb_index+1))
   done
   IFS=$' \t\n'
 }
 function end_cat {
   local cat_processes
-  cat_processes=$(ps -eo cmd,pid | egrep "^cat -u /dev/input/event[0-9][0-9]*")
+  cat_processes=$(ps -eo cmd,pid | egrep "^cat -u mou[0-9]+")
   IFS=$'\n'
-  ## rm -rf events
+  ## rm -rf mouse_events
   for process in $cat_processes; do
     echo "killing proc $(echo "$process" | grep -oP '[0-9]+$'), launch_cmd = $process"
     kill -SIGTERM $(echo "$process" | grep -oP '[0-9]+$')
@@ -57,7 +58,7 @@ function main(){
 
   current=$(pwd)
   mkdir -p /tmp/kbev && cd /tmp/kbev || exit
-  echo "configured events service in  : /tmp/kbev"
+  echo "configured mouse_events service in  : /tmp/kbev"
 
   #ExecStartPre
 
@@ -70,17 +71,17 @@ function main(){
     echo "detected input devices : $input_devices"
     echo "configuring service : "
     chmod 777 input_devices.lst
-    touch events
-    chmod 777 events
+    touch mouse_events
+    chmod 777 mouse_events
 
     echo "starting cat : "
     start_cat "$input_devices"
     echo "waiting 1 minute : "
     sleep 60
     end_cat
-    ls -la events
+    ls -la mouse_events
     echo "cycle done ::::::::::::::::::::::::::::::::: $(date) "
-    echo "" > events
+    echo "" > mouse_events
   done
   #ExecStop=
 
