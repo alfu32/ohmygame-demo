@@ -23,3 +23,5 @@ bin/
 *.db
 *.js
 /hexdump
+/evd
+/hex
